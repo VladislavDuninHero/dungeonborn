@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: dungeonborn
+    url: ${APPLICATION_DEV_URL}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+logging:
+  level:
+    root: info
+    org.springframework: info
+    org.hibernate.sql: info
+    org.hibernate.type: trace
+    com.your.package: debug
+  file:
+    name: logs/dev-application.log
+server:
+  port: 4040
+
+jwt:
+  secret: ${JWT_SECRET}
+
+admin:
+  token: ${ADMIN_TOKEN}
+
+cors:
+  origin: ${ALLOWED_ORIGIN}
+
+
