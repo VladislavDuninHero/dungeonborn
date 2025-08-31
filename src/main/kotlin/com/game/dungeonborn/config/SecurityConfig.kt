@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfigurationSource
@@ -38,6 +37,8 @@ class SecurityConfig(
                 ).permitAll()
                     .requestMatchers(HttpMethod.POST, Route.API_FULL_REGISTRATION_ROUTE).permitAll()
                     .requestMatchers(HttpMethod.POST, Route.API_FULL_LOGIN_ROUTE).permitAll()
+                    .requestMatchers(HttpMethod.POST, Route.API_FULL_ADMIN_LOGIN_ROUTE).permitAll()
+                    .requestMatchers(HttpMethod.POST, Route.API_FULL_REFRESH_TOKEN_ROUTE).permitAll()
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .anyRequest().authenticated()
 
@@ -49,7 +50,7 @@ class SecurityConfig(
     }
 
     @Bean
-    fun passwordEncoder(): PasswordEncoder {
+    fun passwordEncoder(): BCryptPasswordEncoder {
         return BCryptPasswordEncoder();
     }
 }

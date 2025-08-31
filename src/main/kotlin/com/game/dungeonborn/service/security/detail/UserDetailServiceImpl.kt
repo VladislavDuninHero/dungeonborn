@@ -1,19 +1,17 @@
 package com.game.dungeonborn.service.security.detail
 
-import com.game.dungeonborn.repositories.UserRepository
 import com.game.dungeonborn.security.SecurityUser
+import com.game.dungeonborn.service.utils.user.UserUtils
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
 class UserDetailServiceImpl(
-    private val userRepository: UserRepository,
+    private val userUtils: UserUtils,
 ) : UserDetailsService {
     override fun loadUserByUsername(username: String): UserDetails {
-        val user = userRepository.findUserByLogin(username)
-            ?: throw UsernameNotFoundException("User not found: $username")
+        val user = userUtils.findUserByLoginAndGet(username)
 
         return SecurityUser(user)
     }
