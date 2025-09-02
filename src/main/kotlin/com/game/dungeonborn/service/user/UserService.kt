@@ -13,7 +13,9 @@ import com.game.dungeonborn.service.role.RoleService
 import com.game.dungeonborn.service.security.jwt.JwtManager
 import com.game.dungeonborn.service.utils.user.UserUtils
 import com.game.dungeonborn.service.validation.user.login.UserLoginValidationManager
+import com.game.dungeonborn.service.validation.user.update.UserUpdateValidationManager
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService(
@@ -22,6 +24,7 @@ class UserService(
     private val userRepository: UserRepository,
     private val userUtils: UserUtils,
     private val userLoginValidationManager: UserLoginValidationManager,
+    private val userUpdateValidationManager: UserUpdateValidationManager,
     private val jwtManager: JwtManager,
 ) {
 
@@ -50,16 +53,40 @@ class UserService(
         return UserLoginResponseDTO(JwtPairDTO(token, refreshToken.token));
     }
 
-    fun createUser(user: UserRegistrationDTO): UserRegistrationResponseDTO {
-        userUtils.findRegisteredUserByLogin(user.login);
-        userUtils.findUserByEmail(user.email);
+    fun getUserById(id: Long): UserDTO {
+        val user = userUtils.findUserByIdAndGet(id);
 
-        val newUser : User = userMapper.toEntity(user);
+        return userMapper.toUserDTO(user);
+    }
 
-        roleService.createRoleForUser(newUser, Roles.PLAYER);
+    @Transactional
+    fun updateUser(id: Long, user: UpdateUserDTO) : UpdateUserResponseDTO {
+        val foundUser = userUtils.findUserByIdAndGet(id);
 
-        val savedUser = userRepository.save(newUser);
+        userUpdateValidationManager.validate(user);
 
-        return userMapper.toDTO(savedUser);
+        foundUser.email = user.email;
+
+        val updatedUser = userRepository.save(foundUser);
+
+        return UpdateUserResponseDTO(updatedUser.id, updatedUser.login, updatedUser.email);
+    }
+
+    @Transactional
+    fun disableUser(id: Long) {
+        val user = userUtils.findUserByIdAndGet(id);
+
+        user.isEnabled = false;
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    fun recoveryUser(id: Long) {
+        val user = userUtils.findUserByIdAndGet(id);
+
+        user.isEnabled = true;
+
+        userRepository.save(user);
     }
 }

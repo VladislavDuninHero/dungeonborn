@@ -1,5 +1,6 @@
 package com.game.dungeonborn.extensions.user
 
+import com.game.dungeonborn.dto.user.UserDTO
 import com.game.dungeonborn.dto.user.UserRegistrationDTO
 import com.game.dungeonborn.dto.user.UserRegistrationResponseDTO
 import com.game.dungeonborn.entity.user.User
@@ -29,6 +30,17 @@ class UserMapper(
         val id = user.id ?: throw RequiredFieldException("ID is required");
 
         return UserRegistrationResponseDTO(
+            id = id,
+            login = user.login,
+            email = user.email
+        )
+    }
+
+    fun toUserDTO(user: User): UserDTO {
+
+        val id = user.id ?: throw RequiredFieldException("ID is required");
+
+        return UserDTO(
             id = id,
             login = user.login,
             email = user.email

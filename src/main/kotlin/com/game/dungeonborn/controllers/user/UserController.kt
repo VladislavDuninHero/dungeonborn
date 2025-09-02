@@ -1,12 +1,11 @@
 package com.game.dungeonborn.controllers.user
 
 import com.game.dungeonborn.constant.ExceptionMessage
+import com.game.dungeonborn.constant.Message
 import com.game.dungeonborn.constant.Route
 import com.game.dungeonborn.dto.bootstrap.BootstrapDTO
-import com.game.dungeonborn.dto.user.RefreshTokenResponseDTO
-import com.game.dungeonborn.dto.user.UserLoginDTO
-import com.game.dungeonborn.dto.user.UserRegistrationDTO
-import com.game.dungeonborn.dto.user.UserRegistrationResponseDTO
+import com.game.dungeonborn.dto.official.SuccessMessageDTO
+import com.game.dungeonborn.dto.user.*
 import com.game.dungeonborn.exception.user.RefreshTokenIsInvalidException
 import com.game.dungeonborn.service.security.jwt.JwtService
 import com.game.dungeonborn.service.user.UserService
@@ -71,12 +70,44 @@ class UserController(
         return ResponseEntity.ok(RefreshTokenResponseDTO(newAccessToken));
     }
 
-    @PostMapping(Route.API_GET_ROUTE)
+    @GetMapping(Route.API_GET_ROUTE)
     @PreAuthorize("hasAuthority('READ_USER')")
     fun getUser(
-        @PathVariable("id") id: String,
-    ): ResponseEntity<String> {
+        @PathVariable("id") id: Long,
+    ): ResponseEntity<UserDTO> {
+        val foundedUser = userService.getUserById(id);
 
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(foundedUser);
+    }
+
+    @PutMapping(Route.API_UPDATE_ROUTE)
+    @PreAuthorize("hasAuthority('UPDATE_USER')")
+    fun updateUser(
+        @PathVariable("id") id: Long,
+        @RequestBody @Validated user: UpdateUserDTO,
+    ): ResponseEntity<UpdateUserResponseDTO> {
+        val updatedUser = userService.updateUser(id, user);
+
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping(Route.API_DELETE_ROUTE)
+    @PreAuthorize("hasAuthority('DELETE_USER')")
+    fun deleteUser(
+        @PathVariable("id") id: Long,
+    ): ResponseEntity<SuccessMessageDTO> {
+        userService.disableUser(id);
+
+        return ResponseEntity.ok(SuccessMessageDTO(Message.DEFAULT_SUCCESS_MESSAGE));
+    }
+
+    @PostMapping(Route.API_RECOVERY_ROUTE)
+    @PreAuthorize("hasAuthority('DELETE_USER')")
+    fun recoveryUser(
+        @PathVariable("id") id: Long,
+    ): ResponseEntity<SuccessMessageDTO> {
+        userService.recoveryUser(id);
+
+        return ResponseEntity.ok(SuccessMessageDTO(Message.DEFAULT_SUCCESS_MESSAGE));
     }
 }

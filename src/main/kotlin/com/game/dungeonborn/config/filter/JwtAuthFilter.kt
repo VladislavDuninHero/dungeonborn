@@ -109,6 +109,11 @@ class JwtAuthFilter(
                     }
                 }
 
+                sendError(
+                    response,
+                    e.message ?: ExceptionMessage.SOMETHING_WENT_WRONG,
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                )
                 return;
             }
         }

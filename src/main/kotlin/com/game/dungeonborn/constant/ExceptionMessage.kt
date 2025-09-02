@@ -13,4 +13,5 @@ object ExceptionMessage {
     const val UNAUTHORIZED : String = "Unauthorized";
     const val INVALID_TOKEN : String = "Invalid token";
     const val AUTHORIZATION_HEADER_IS_MISSING : String = "Authorization header is missing";
+    const val SOMETHING_WENT_WRONG : String = "Something went wrong";
 }

@@ -1,7 +1,6 @@
 package com.game.dungeonborn.service.utils.user
 
 import com.game.dungeonborn.constant.ExceptionMessage
-import com.game.dungeonborn.dto.user.UserLoginDTO
 import com.game.dungeonborn.entity.user.User
 import com.game.dungeonborn.exception.RequiredFieldException
 import com.game.dungeonborn.exception.user.EmailIsBusyException
@@ -14,6 +13,10 @@ import org.springframework.stereotype.Service
 class UserUtils(
     private val userRepository: UserRepository
 ) {
+    fun findUserByIdAndGet(id: Long): User {
+        return userRepository.findUserById(id)
+            .orElseThrow { UserNotFoundException(ExceptionMessage.USER_NOT_FOUND) };
+    }
 
     fun findRegisteredUserByLogin(login: String?) {
         val loginField = login ?: throw RequiredFieldException("Required field 'login' is required");
@@ -40,11 +43,4 @@ class UserUtils(
         }
     }
 
-    fun validateUserData(user: UserLoginDTO, foundUser: User) {
-        val userLogin = user.login;
-        val userPassword = user.password;
-        val userEmail = user.email;
-
-
-    }
 }

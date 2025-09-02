@@ -31,11 +31,10 @@ class AdminController(
 
     @PostMapping(Route.API_ADMIN_USER_CREATE_ROUTE)
     @PreAuthorize("hasAuthority('CREATE_USER')")
-    fun createUser(@RequestBody @Validated user: UserRegistrationDTO): ResponseEntity<UserRegistrationResponseDTO> {
-        val createdUser = userService.createUser(user);
+    fun createUser(@RequestBody @Validated user: UserRegistrationDTO): ResponseEntity<String> {
 
         val location: URI = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").build().toUri();
 
-        return ResponseEntity.created(location).body(createdUser);
+        return ResponseEntity.created(location).body("");
     }
 }

@@ -1,5 +1,6 @@
 package com.game.dungeonborn.config.validation
 
+import com.game.dungeonborn.dto.user.UpdateUserDTO
 import com.game.dungeonborn.dto.user.UserLoginDTO
 import com.game.dungeonborn.dto.user.UserRegistrationDTO
 import com.game.dungeonborn.service.validation.base.BaseValidator
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class ValidationConfig(
     private val userLoginValidators: List<BaseValidator<UserLoginDTO>>,
+    private val userUpdateValidators: List<BaseValidator<UpdateUserDTO>>,
 ) {
 
     @PostConstruct
@@ -19,5 +21,14 @@ class ValidationConfig(
         }
 
         return userLoginValidators;
+    }
+
+    @PostConstruct
+    fun configureUserUpdateValidators(): List<BaseValidator<UpdateUserDTO>> {
+        for (i in 1 until userUpdateValidators.size - 1) {
+            userUpdateValidators[i - 1].next = userUpdateValidators[i];
+        }
+
+        return userUpdateValidators;
     }
 }

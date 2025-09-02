@@ -23,6 +23,8 @@ logging:
   level:
     root: info
     org.springframework: info
+    org.springframework.security: debug
+    org.springframework.web: debug
     org.hibernate.sql: info
     org.hibernate.type: trace
     com.your.package: debug
