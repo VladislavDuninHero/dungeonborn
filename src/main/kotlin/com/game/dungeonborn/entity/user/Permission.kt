@@ -2,7 +2,10 @@ package com.game.dungeonborn.entity.user
 
 import com.game.dungeonborn.enums.PermissionType
 import jakarta.persistence.*
+import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
 import org.springframework.security.core.GrantedAuthority
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "permissions")
@@ -22,4 +25,11 @@ class Permission(
         return permissionType.name;
     }
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
+    var createdAt: LocalDateTime? = null;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    var updatedAt: LocalDateTime? = null;
 }

@@ -2,6 +2,9 @@ package com.game.dungeonborn.entity.user
 
 import com.game.dungeonborn.enums.Roles
 import jakarta.persistence.*
+import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "role")
@@ -19,4 +22,12 @@ class Role(
     @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     val permissions: MutableSet<Permission> = mutableSetOf()
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreationTimestamp
+    var createdAt: LocalDateTime? = null;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    var updatedAt: LocalDateTime? = null;
 }

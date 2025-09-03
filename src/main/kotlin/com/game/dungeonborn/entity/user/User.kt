@@ -1,5 +1,6 @@
 package com.game.dungeonborn.entity.user
 
+import com.game.dungeonborn.entity.character.Character
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
@@ -28,6 +29,10 @@ class User(
     @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     var roles: MutableList<Role> = mutableListOf()
+
+    @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    var characters: MutableList<Character> = mutableListOf()
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

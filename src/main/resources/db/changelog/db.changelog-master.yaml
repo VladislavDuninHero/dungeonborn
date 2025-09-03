@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/2025/09/init_db.sql
+  - include:
+      file: db/changelog/2025/09/create_admin_user.sql
+  - include:
+      file: db/changelog/2025/09/add_character_classes_data.sql
+  - include:
+      file: db/changelog/2025/09/add_character_levels_bonus.sql
