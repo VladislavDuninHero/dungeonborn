@@ -33,9 +33,17 @@ class Character(
     @JoinColumn(name = "character_class_id")
     var characterClass: CharacterClass? = null
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "character_stat_id")
     var characterStat: CharacterStats? = null
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name = "character_inventory_id", nullable = false)
+    var characterInventory: CharacterInventory? = null
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name = "character_equipment_id", nullable = false)
+    var characterEquipment: CharacterEquipment? = null
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

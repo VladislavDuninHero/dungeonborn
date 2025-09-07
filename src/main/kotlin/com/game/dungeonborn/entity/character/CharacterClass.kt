@@ -2,6 +2,7 @@ package com.game.dungeonborn.entity.character
 
 import com.game.dungeonborn.enums.character.CharacterClass
 import com.game.dungeonborn.enums.character.CharacterClassType
+import com.game.dungeonborn.enums.stat.MainStat
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
@@ -37,6 +38,9 @@ class CharacterClass(
     @Column(name = "base_critical_chance", nullable = false)
     var baseCriticalChance: Double = 0.0,
 
+    @Column(name = "main_stat", nullable = false)
+    @Enumerated(EnumType.STRING)
+    var mainStat: MainStat,
 ) {
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp

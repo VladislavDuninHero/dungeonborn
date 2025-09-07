@@ -31,7 +31,7 @@ class CharacterStats(
     var totalCriticalChance: Double? = 0.0,
 
     @Column(name = "total_critical_power", nullable = false)
-    var totalCriticalPower: Double? = 0.0,
+    var totalCriticalPower: Double? = 1.0,
 
     @Column(name = "total_gear_score", nullable = false)
     var totalGearScore: Double? = 0.0,

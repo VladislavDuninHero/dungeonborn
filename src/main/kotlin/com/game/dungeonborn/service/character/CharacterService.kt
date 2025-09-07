@@ -1,0 +1,78 @@
+package com.game.dungeonborn.service.character
+
+import com.game.dungeonborn.constant.ExceptionMessage
+import com.game.dungeonborn.dto.character.CreateCharacterDTO
+import com.game.dungeonborn.dto.character.CreateCharacterResponseDTO
+import com.game.dungeonborn.entity.character.Character
+import com.game.dungeonborn.entity.character.CharacterEquipment
+import com.game.dungeonborn.entity.character.CharacterInventory
+import com.game.dungeonborn.entity.character.CharacterStats
+import com.game.dungeonborn.exception.RequiredFieldException
+import com.game.dungeonborn.repositories.CharacterClassesRepository
+import com.game.dungeonborn.repositories.CharacterRepository
+import com.game.dungeonborn.repositories.CharacterStatsRepository
+import com.game.dungeonborn.service.utils.character.CharacterUtils
+import com.game.dungeonborn.service.utils.user.UserUtils
+import org.springframework.stereotype.Service
+
+@Service
+class CharacterService(
+    private val userUtils: UserUtils,
+    private val characterRepository: CharacterRepository,
+    private val characterStatsRepository: CharacterStatsRepository,
+    private val characterClassesRepository: CharacterClassesRepository,
+    private val characterUtils: CharacterUtils
+) {
+
+    fun createCharacter(character: CreateCharacterDTO): CreateCharacterResponseDTO {
+        val user = userUtils.findUserByIdAndGet(character.userId);
+        val characterClassName = character.characterClass;
+
+        val characterClass = characterClassesRepository.findByClassName(characterClassName);
+
+        val baseIntellect = characterClass?.baseIntellect ?: 0.0;
+        val baseStrength = characterClass?.baseStrength ?: 0.0;
+        val baseAgility = characterClass?.baseAgility ?: 0.0;
+        val baseHp = characterClass?.baseHp ?: 0.0;
+        val baseCriticalChance = characterClass?.baseCriticalChance ?: 0.0;
+        val mainStat = characterClass?.mainStat ?: throw RequiredFieldException("Main stat field is required");
+
+        val calculatedMana = characterUtils.calculateCharacterMana(baseIntellect, 1);
+        val calculatedDamage = characterUtils.getBaseDamageForCharacterClassMainStat(characterClass) * characterUtils
+                .getSecondStatCoefficient(mainStat);
+
+        val characterStats = CharacterStats(
+            totalHp = baseHp,
+            totalMana = calculatedMana,
+            totalStrength = baseStrength,
+            totalIntellect = baseIntellect,
+            totalAgility = baseAgility,
+            totalCriticalChance = baseCriticalChance,
+            totalGearScore = 0.0,
+            totalDamage = calculatedDamage,
+            totalArmor = 0.0,
+        );
+
+        val characterInventory = CharacterInventory();
+
+        val newCharacter = Character(
+            name = character.name,
+            characterLevel = 1
+        );
+
+        newCharacter.characterClass = characterClass;
+        newCharacter.characterStat = characterStats;
+        newCharacter.characterInventory = characterInventory;
+        newCharacter.characterEquipment = CharacterEquipment();
+        newCharacter.user = user;
+
+        val createdCharacter = characterRepository.save(newCharacter);
+
+        return CreateCharacterResponseDTO(
+            createdCharacter.id ?: 0,
+            user.id ?: 0,
+            createdCharacter.name,
+            1
+        )
+    }
+}

@@ -6,6 +6,7 @@ object Route {
     const val API_ADMIN_ROUTE = "/api/v1/admin"
     const val API_ADMIN_USER_CREATE_ROUTE = "/user/create"
     const val API_USER_TOKEN_REFRESH_ROUTE = "/auth/refresh"
+    const val API_CHARACTERS_ROUTE = "/api/v1/characters"
 
     const val API_FULL_REGISTRATION_ROUTE = "/api/v1/user/registration"
     const val API_FULL_LOGIN_ROUTE = "/api/v1/user/login"
