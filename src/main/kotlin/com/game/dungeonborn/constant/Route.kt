@@ -19,4 +19,6 @@ object Route {
     const val API_UPDATE_ROUTE = "/update/{id}"
     const val API_DELETE_ROUTE = "/delete/{id}"
     const val API_RECOVERY_ROUTE = "/recovery/{id}"
+
+    const val GET_ALL_CHARACTERS_ROUTE = "/{id}/characters"
 }

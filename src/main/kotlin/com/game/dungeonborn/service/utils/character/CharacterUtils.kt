@@ -66,7 +66,11 @@ class CharacterUtils(
 
     fun findCharacterById(id: Long): Character {
         return characterRepository.findCharacterById(id)
-            .orElseThrow { throw CharacterNotFoundException(ExceptionMessage.USER_NOT_FOUND) };
+            .orElseThrow { throw CharacterNotFoundException(ExceptionMessage.CHARACTER_NOT_FOUND) };
+    }
+
+    fun findAllCharactersByUserId(id: Long): List<Character> {
+        return characterRepository.findAllCharactersByUserId(id);
     }
 
     fun getSecondStatCoefficient(mainStat: MainStat): Double {

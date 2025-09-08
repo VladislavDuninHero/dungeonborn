@@ -4,9 +4,11 @@ import com.game.dungeonborn.constant.ExceptionMessage
 import com.game.dungeonborn.constant.Message
 import com.game.dungeonborn.constant.Route
 import com.game.dungeonborn.dto.bootstrap.BootstrapDTO
+import com.game.dungeonborn.dto.character.CharacterDTO
 import com.game.dungeonborn.dto.official.SuccessMessageDTO
 import com.game.dungeonborn.dto.user.*
 import com.game.dungeonborn.exception.user.RefreshTokenIsInvalidException
+import com.game.dungeonborn.service.character.CharacterService
 import com.game.dungeonborn.service.security.jwt.JwtService
 import com.game.dungeonborn.service.user.UserService
 import jakarta.servlet.http.HttpServletResponse
@@ -25,6 +27,7 @@ import java.time.Duration
 class UserController(
     private val userService: UserService,
     private val jwtService: JwtService,
+    private val characterService: CharacterService,
 ) {
 
     @PostMapping(Route.API_USER_REGISTRATION_ROUTE)
@@ -109,5 +112,15 @@ class UserController(
         userService.recoveryUser(id);
 
         return ResponseEntity.ok(SuccessMessageDTO(Message.DEFAULT_SUCCESS_MESSAGE));
+    }
+
+    @GetMapping(Route.GET_ALL_CHARACTERS_ROUTE)
+    @PreAuthorize("hasAuthority('READ_CHAR')")
+    fun getAllCharactersByUserId(
+        @PathVariable id: Long
+    ): ResponseEntity<List<CharacterDTO>> {
+        val foundedCharacter = characterService.getAllCharactersForUserId(id);
+
+        return ResponseEntity.ok(foundedCharacter);
     }
 }

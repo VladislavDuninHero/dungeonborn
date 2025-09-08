@@ -1,13 +1,17 @@
 package com.game.dungeonborn.service.character
 
 import com.game.dungeonborn.constant.ExceptionMessage
+import com.game.dungeonborn.dto.character.CharacterClassDTO
+import com.game.dungeonborn.dto.character.CharacterDTO
 import com.game.dungeonborn.dto.character.CreateCharacterDTO
 import com.game.dungeonborn.dto.character.CreateCharacterResponseDTO
+import com.game.dungeonborn.dto.item.ItemDTO
 import com.game.dungeonborn.entity.character.Character
 import com.game.dungeonborn.entity.character.CharacterEquipment
 import com.game.dungeonborn.entity.character.CharacterInventory
 import com.game.dungeonborn.entity.character.CharacterStats
 import com.game.dungeonborn.exception.RequiredFieldException
+import com.game.dungeonborn.extensions.character.CharacterMapper
 import com.game.dungeonborn.repositories.CharacterClassesRepository
 import com.game.dungeonborn.repositories.CharacterRepository
 import com.game.dungeonborn.repositories.CharacterStatsRepository
@@ -21,7 +25,8 @@ class CharacterService(
     private val characterRepository: CharacterRepository,
     private val characterStatsRepository: CharacterStatsRepository,
     private val characterClassesRepository: CharacterClassesRepository,
-    private val characterUtils: CharacterUtils
+    private val characterUtils: CharacterUtils,
+    private val characterMapper: CharacterMapper
 ) {
 
     fun createCharacter(character: CreateCharacterDTO): CreateCharacterResponseDTO {
@@ -74,5 +79,29 @@ class CharacterService(
             createdCharacter.name,
             1
         )
+    }
+
+    fun getCharacterById(id: Long): CharacterDTO {
+        val character = characterUtils.findCharacterById(id);
+
+        val mappedEquipment = characterUtils.convertCharacterEquipmentToList(character.characterEquipment)
+            .filterNotNull().map { ItemDTO(it.name) }
+        val characterClass = character.characterClass?.name;
+
+        return CharacterDTO(
+            character.id ?: 0,
+            character.name,
+            character.characterLevel,
+            characterClass,
+            mappedEquipment
+        );
+    }
+
+    fun getAllCharactersForUserId(userId: Long): List<CharacterDTO> {
+        val characters = characterUtils.findAllCharactersByUserId(userId);
+
+        return characters.map{
+            characterMapper.toCharacterDTO(it)
+        }
     }
 }
