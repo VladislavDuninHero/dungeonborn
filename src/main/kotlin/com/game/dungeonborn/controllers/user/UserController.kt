@@ -114,7 +114,7 @@ class UserController(
         return ResponseEntity.ok(SuccessMessageDTO(Message.DEFAULT_SUCCESS_MESSAGE));
     }
 
-    @GetMapping(Route.GET_ALL_CHARACTERS_ROUTE)
+    @GetMapping(Route.API_GET_ALL_CHARACTERS_ROUTE)
     @PreAuthorize("hasAuthority('READ_CHAR')")
     fun getAllCharactersByUserId(
         @PathVariable id: Long

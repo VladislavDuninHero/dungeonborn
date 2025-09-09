@@ -1,10 +1,7 @@
 package com.game.dungeonborn.service.character
 
 import com.game.dungeonborn.constant.ExceptionMessage
-import com.game.dungeonborn.dto.character.CharacterClassDTO
-import com.game.dungeonborn.dto.character.CharacterDTO
-import com.game.dungeonborn.dto.character.CreateCharacterDTO
-import com.game.dungeonborn.dto.character.CreateCharacterResponseDTO
+import com.game.dungeonborn.dto.character.*
 import com.game.dungeonborn.dto.item.ItemDTO
 import com.game.dungeonborn.entity.character.Character
 import com.game.dungeonborn.entity.character.CharacterEquipment
@@ -17,6 +14,7 @@ import com.game.dungeonborn.repositories.CharacterRepository
 import com.game.dungeonborn.repositories.CharacterStatsRepository
 import com.game.dungeonborn.service.utils.character.CharacterUtils
 import com.game.dungeonborn.service.utils.user.UserUtils
+import com.game.dungeonborn.service.validation.character.UpdateCharacterValidationManager
 import org.springframework.stereotype.Service
 
 @Service
@@ -26,10 +24,13 @@ class CharacterService(
     private val characterStatsRepository: CharacterStatsRepository,
     private val characterClassesRepository: CharacterClassesRepository,
     private val characterUtils: CharacterUtils,
-    private val characterMapper: CharacterMapper
+    private val characterMapper: CharacterMapper,
+    private val updateCharacterValidationManager: UpdateCharacterValidationManager
 ) {
 
     fun createCharacter(character: CreateCharacterDTO): CreateCharacterResponseDTO {
+        characterUtils.validateCharacterName(character.name);
+
         val user = userUtils.findUserByIdAndGet(character.userId);
         val characterClassName = character.characterClass;
 
@@ -103,5 +104,23 @@ class CharacterService(
         return characters.map{
             characterMapper.toCharacterDTO(it)
         }
+    }
+
+    fun updateCharacter(updateCharacterDTO: UpdateCharacterDTO): CharacterDTO {
+        updateCharacterValidationManager.validate(updateCharacterDTO);
+
+        val character = characterUtils.findCharacterById(updateCharacterDTO.characterId);
+
+        character.name = updateCharacterDTO.name;
+
+        val updatedCharacter = characterRepository.save(character);
+
+        return characterMapper.toCharacterDTO(updatedCharacter);
+    }
+
+    fun deleteCharacter(id: Long) {
+        val character = characterUtils.findCharacterById(id);
+
+        characterRepository.delete(character);
     }
 }

@@ -7,10 +7,12 @@ import com.game.dungeonborn.entity.item.Item
 import com.game.dungeonborn.entity.character.CharacterClass
 import com.game.dungeonborn.enums.stat.MainStat
 import com.game.dungeonborn.enums.stat.SecondaryStat
+import com.game.dungeonborn.exception.character.CharacterNameIsTakenException
 import com.game.dungeonborn.exception.character.CharacterNotFoundException
 import com.game.dungeonborn.repositories.CharacterRepository
 import com.game.dungeonborn.service.stat.MainStatCoefficientFactory
 import com.game.dungeonborn.service.utils.level.CharacterLevelUtils
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -67,6 +69,17 @@ class CharacterUtils(
     fun findCharacterById(id: Long): Character {
         return characterRepository.findCharacterById(id)
             .orElseThrow { throw CharacterNotFoundException(ExceptionMessage.CHARACTER_NOT_FOUND) };
+    }
+
+    fun findCharacterByName(name: String): Character {
+        return characterRepository.findCharacterByName(name)
+            .orElseThrow { throw CharacterNotFoundException(ExceptionMessage.CHARACTER_NOT_FOUND) };
+    }
+
+    fun validateCharacterName(name: String) {
+        characterRepository.findCharacterByName(name).ifPresent {
+            throw CharacterNameIsTakenException(ExceptionMessage.CHARACTER_NAME_IS_TAKEN);
+        }
     }
 
     fun findAllCharactersByUserId(id: Long): List<Character> {

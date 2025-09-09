@@ -1,22 +1,18 @@
 package com.game.dungeonborn.dto.character
 
-import com.game.dungeonborn.enums.character.CharacterClass
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
 
-data class CreateCharacterDTO(
+data class UpdateCharacterDTO(
+
+    @field:NotNull
+    val characterId: Long,
 
     @field:NotNull
     @field:NotBlank
     @field:Size(min = 2, max = 20)
     @field:Pattern(regexp = "^[a-zA-Z]+$")
-    val name: String,
-
-    @field:NotNull
-    val characterClass: CharacterClass,
-
-    @field:NotNull
-    val userId: Long
+    val name: String
 )

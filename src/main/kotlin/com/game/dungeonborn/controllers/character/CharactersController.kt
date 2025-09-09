@@ -1,10 +1,14 @@
 package com.game.dungeonborn.controllers.character
 
+import com.game.dungeonborn.constant.Message
 import com.game.dungeonborn.constant.Route
 import com.game.dungeonborn.dto.character.CharacterDTO
 import com.game.dungeonborn.dto.character.CreateCharacterDTO
 import com.game.dungeonborn.dto.character.CreateCharacterResponseDTO
+import com.game.dungeonborn.dto.character.UpdateCharacterDTO
+import com.game.dungeonborn.dto.official.SuccessMessageDTO
 import com.game.dungeonborn.service.character.CharacterService
+import jakarta.validation.constraints.NotNull
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
@@ -36,4 +40,23 @@ class CharactersController(
         return ResponseEntity.ok(foundedCharacter);
     }
 
+    @PutMapping(Route.API_UPDATE_CHARACTER_ROUTE)
+    @PreAuthorize("hasAuthority('UPDATE_CHAR')")
+    fun updateCharacter(
+        @RequestBody @Validated updateCharacterDTO: UpdateCharacterDTO
+    ): ResponseEntity<CharacterDTO> {
+        val updatedCharacter = characterService.updateCharacter(updateCharacterDTO);
+
+        return ResponseEntity.ok(updatedCharacter);
+    }
+
+    @DeleteMapping(Route.API_DELETE_ROUTE)
+    @PreAuthorize("hasAuthority('DELETE_CHAR')")
+    fun deleteCharacter(
+        @PathVariable @NotNull id: Long
+    ): ResponseEntity<SuccessMessageDTO> {
+        characterService.deleteCharacter(id);
+
+        return ResponseEntity.ok(SuccessMessageDTO(Message.DEFAULT_SUCCESS_MESSAGE));
+    }
 }

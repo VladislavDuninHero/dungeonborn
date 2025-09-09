@@ -10,6 +10,9 @@ interface CharacterRepository : JpaRepository<Character, Long> {
     @Query("FROM Character c WHERE c.id = :id")
     fun findCharacterById(id: Long): Optional<Character>
 
+    @Query("FROM Character c WHERE c.name = :name")
+    fun findCharacterByName(name: String): Optional<Character>
+
     @Query("FROM Character c WHERE c.user.id = :id")
     fun findAllCharactersByUserId(id: Long): List<Character>
 }
