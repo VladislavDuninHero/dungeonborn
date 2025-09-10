@@ -8,10 +8,12 @@ import com.game.dungeonborn.dto.character.CharacterDTO
 import com.game.dungeonborn.dto.official.SuccessMessageDTO
 import com.game.dungeonborn.dto.user.*
 import com.game.dungeonborn.exception.user.RefreshTokenIsInvalidException
+import com.game.dungeonborn.service.bootstrap.BootstrapService
 import com.game.dungeonborn.service.character.CharacterService
 import com.game.dungeonborn.service.security.jwt.JwtService
 import com.game.dungeonborn.service.user.UserService
 import jakarta.servlet.http.HttpServletResponse
+import jakarta.validation.constraints.NotNull
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
@@ -28,6 +30,7 @@ class UserController(
     private val userService: UserService,
     private val jwtService: JwtService,
     private val characterService: CharacterService,
+    private val bootstrapService: BootstrapService,
 ) {
 
     @PostMapping(Route.API_USER_REGISTRATION_ROUTE)
@@ -44,7 +47,7 @@ class UserController(
         @RequestBody
         @Validated user: UserLoginDTO,
         response: HttpServletResponse
-    ): ResponseEntity<BootstrapDTO> {
+    ): ResponseEntity<UserLoginResponseSlimDTO> {
         val userLoginData = userService.login(user);
 
         val cookie = ResponseCookie.from("refreshToken", userLoginData.authorization.refreshToken)
@@ -55,7 +58,20 @@ class UserController(
             .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-        return ResponseEntity.ok(BootstrapDTO(userLoginData.authorization.accessToken));
+        return ResponseEntity.ok(UserLoginResponseSlimDTO(
+            userLoginData.login,
+            userLoginData.authorization.accessToken
+        ));
+    }
+
+    @GetMapping(Route.API_BOOTSTRAP_ROUTE)
+    @PreAuthorize("hasAuthority('READ_USER')")
+    fun bootstrap(
+        @PathVariable @NotNull login: String,
+    ): ResponseEntity<BootstrapDTO> {
+        val bootstrap = bootstrapService.getBootstrap(login);
+
+        return ResponseEntity.ok(bootstrap);
     }
 
     @PostMapping(Route.API_USER_TOKEN_REFRESH_ROUTE)

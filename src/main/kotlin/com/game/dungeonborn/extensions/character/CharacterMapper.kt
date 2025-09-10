@@ -1,6 +1,7 @@
 package com.game.dungeonborn.extensions.character
 
 import com.game.dungeonborn.dto.character.CharacterDTO
+import com.game.dungeonborn.dto.character.CharacterSlimDTO
 import com.game.dungeonborn.dto.item.ItemDTO
 import com.game.dungeonborn.entity.character.Character
 import com.game.dungeonborn.service.utils.character.CharacterUtils
@@ -21,6 +22,17 @@ class CharacterMapper(
             character.characterLevel,
             characterClass,
             mappedEquipment
+        );
+    }
+
+    fun toCharacterSlimDTO(character: Character) : CharacterSlimDTO {
+        val characterClass = character.characterClass?.name;
+
+        return CharacterSlimDTO(
+            character.id ?: 0,
+            character.name,
+            character.characterLevel,
+            characterClass,
         );
     }
 }

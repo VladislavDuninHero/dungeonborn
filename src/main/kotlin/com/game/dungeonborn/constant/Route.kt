@@ -1,6 +1,7 @@
 package com.game.dungeonborn.constant
 
 object Route {
+    const val API_MAIN_ROUTE = "/api/v1"
     const val API_USER_ROUTE = "/api/v1/user"
     const val API_USER_REGISTRATION_ROUTE = "/registration"
     const val API_ADMIN_ROUTE = "/api/v1/admin"
@@ -19,6 +20,7 @@ object Route {
     const val API_UPDATE_ROUTE = "/update/{id}"
     const val API_DELETE_ROUTE = "/delete/{id}"
     const val API_RECOVERY_ROUTE = "/recovery/{id}"
+    const val API_BOOTSTRAP_ROUTE = "/{login}/bootstrap"
 
     const val API_GET_ALL_CHARACTERS_ROUTE = "/{id}/characters"
     const val API_UPDATE_CHARACTER_ROUTE = "/update"
