@@ -5,6 +5,7 @@ import com.game.dungeonborn.entity.character.Character
 import com.game.dungeonborn.entity.character.CharacterEquipment
 import com.game.dungeonborn.entity.item.Item
 import com.game.dungeonborn.entity.character.CharacterClass
+import com.game.dungeonborn.entity.character.CharacterInventory
 import com.game.dungeonborn.enums.stat.MainStat
 import com.game.dungeonborn.enums.stat.SecondaryStat
 import com.game.dungeonborn.exception.character.CharacterNameIsTakenException
@@ -12,9 +13,7 @@ import com.game.dungeonborn.exception.character.CharacterNotFoundException
 import com.game.dungeonborn.repositories.CharacterRepository
 import com.game.dungeonborn.service.stat.MainStatCoefficientFactory
 import com.game.dungeonborn.service.utils.level.CharacterLevelUtils
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class CharacterUtils(

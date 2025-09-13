@@ -2,10 +2,7 @@ package com.game.dungeonborn.controllers.character
 
 import com.game.dungeonborn.constant.Message
 import com.game.dungeonborn.constant.Route
-import com.game.dungeonborn.dto.character.CharacterDTO
-import com.game.dungeonborn.dto.character.CreateCharacterDTO
-import com.game.dungeonborn.dto.character.CreateCharacterResponseDTO
-import com.game.dungeonborn.dto.character.UpdateCharacterDTO
+import com.game.dungeonborn.dto.character.*
 import com.game.dungeonborn.dto.official.SuccessMessageDTO
 import com.game.dungeonborn.service.character.CharacterService
 import jakarta.validation.constraints.NotNull
@@ -58,5 +55,15 @@ class CharactersController(
         characterService.deleteCharacter(id);
 
         return ResponseEntity.ok(SuccessMessageDTO(Message.DEFAULT_SUCCESS_MESSAGE));
+    }
+
+    @PostMapping(Route.API_SELECT_ROUTE)
+    @PreAuthorize("hasAuthority('READ_CHAR')")
+    fun selectCharacter(
+        @RequestBody selectCharacterDTO: SelectCharacterDTO,
+    ) : ResponseEntity<SelectCharacterResponseDTO> {
+        val selectedCharacterResponse = characterService.selectCharacter(selectCharacterDTO);
+
+        return ResponseEntity.ok(selectedCharacterResponse);
     }
 }

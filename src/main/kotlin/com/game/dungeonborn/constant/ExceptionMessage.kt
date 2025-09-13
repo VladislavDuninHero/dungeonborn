@@ -18,6 +18,7 @@ object ExceptionMessage {
     const val CHARACTER_LEVEL_NOT_FOUND : String = "%s level not found";
     const val CHARACTER_NOT_FOUND : String = "Character not found";
     const val CHARACTER_NAME_IS_TAKEN : String = "Character name is taken";
+    const val CHARACTER_STATS_NOT_FOUND : String = "Character stats not found";
     const val USER_IS_NOT_CHARACTER_OWNER : String = "User %s is not character %s owner";
     const val NOT_IMPLEMENTED : String = "%s not implemented";
 }

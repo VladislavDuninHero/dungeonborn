@@ -13,7 +13,7 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class CharacterUtilsTest {
+class CharacterStatsUtilsTest {
 
     private val characterRepository = mockk<CharacterRepository>()
     private val mainStatCoefficientFactory = mockk<MainStatCoefficientFactory>()

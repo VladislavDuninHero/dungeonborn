@@ -9,9 +9,11 @@ import com.game.dungeonborn.entity.character.CharacterInventory
 import com.game.dungeonborn.entity.character.CharacterStats
 import com.game.dungeonborn.exception.RequiredFieldException
 import com.game.dungeonborn.extensions.character.CharacterMapper
+import com.game.dungeonborn.extensions.stats.CharacterStatsMapper
 import com.game.dungeonborn.repositories.CharacterClassesRepository
 import com.game.dungeonborn.repositories.CharacterRepository
 import com.game.dungeonborn.repositories.CharacterStatsRepository
+import com.game.dungeonborn.service.stat.CharacterStatsUtils
 import com.game.dungeonborn.service.utils.character.CharacterUtils
 import com.game.dungeonborn.service.utils.user.UserUtils
 import com.game.dungeonborn.service.validation.character.UpdateCharacterValidationManager
@@ -25,7 +27,9 @@ class CharacterService(
     private val characterClassesRepository: CharacterClassesRepository,
     private val characterUtils: CharacterUtils,
     private val characterMapper: CharacterMapper,
-    private val updateCharacterValidationManager: UpdateCharacterValidationManager
+    private val updateCharacterValidationManager: UpdateCharacterValidationManager,
+    private val characterStatsUtils: CharacterStatsUtils,
+    private val characterStatsMapper: CharacterStatsMapper
 ) {
 
     fun createCharacter(character: CreateCharacterDTO): CreateCharacterResponseDTO {
@@ -88,13 +92,20 @@ class CharacterService(
         val mappedEquipment = characterUtils.convertCharacterEquipmentToList(character.characterEquipment)
             .filterNotNull().map { ItemDTO(it.name) }
         val characterClass = character.characterClass?.name;
+        val characterStats = characterStatsUtils.findCharacterStatsByCharacterIdAndGet(id);
+        val mappedInventory = character.characterInventory?.items?.map {
+            ItemDTO(it.name);
+        }.orEmpty();
+
 
         return CharacterDTO(
             character.id ?: 0,
             character.name,
             character.characterLevel,
             characterClass,
-            mappedEquipment
+            characterStatsMapper.toDTO(characterStats),
+            mappedEquipment,
+            mappedInventory
         );
     }
 
@@ -122,5 +133,14 @@ class CharacterService(
         val character = characterUtils.findCharacterById(id);
 
         characterRepository.delete(character);
+    }
+
+    fun selectCharacter(selectCharacterDTO: SelectCharacterDTO) : SelectCharacterResponseDTO {
+        val character = characterMapper.toCharacterDTO(characterUtils.findCharacterById(selectCharacterDTO.characterId));
+
+        return SelectCharacterResponseDTO(
+            character,
+            "1"
+        )
     }
 }

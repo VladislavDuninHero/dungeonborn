@@ -8,5 +8,7 @@ data class CharacterDTO(
     var name: String,
     var level: Int,
     var characterClass: CharacterClass?,
-    var equipment: List<ItemDTO>
+    var characterStats: CharacterStatsDTO,
+    var equipment: List<ItemDTO>,
+    var inventory: List<ItemDTO>
 )
