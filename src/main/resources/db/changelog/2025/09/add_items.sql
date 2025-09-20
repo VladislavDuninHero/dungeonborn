@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset author:vladislavdunin
+-- changeset wladw:1758048554-49
 -- comment: Insert all games items
 
 INSERT INTO items (

@@ -9,3 +9,21 @@ databaseChangeLog:
       file: db/changelog/2025/09/add_character_levels_bonus.sql
   - include:
       file: db/changelog/2025/09/add_items.sql
+  - include:
+      file: db/changelog/2025/09/add_dungeon_and_dungeon_loot_tables.sql
+  - include:
+      file: db/changelog/2025/09/add_npc_tables.sql
+  - include:
+      file: db/changelog/2025/09/add_dungeons.sql
+  - include:
+      file: db/changelog/2025/09/add_loot_tables.sql
+  - include:
+      file: db/changelog/2025/09/add_loot_table_items.sql
+  - include:
+      file: db/changelog/2025/09/add_dungeon_loot.sql
+  - include:
+      file: db/changelog/2025/09/add_dungeons_levels.sql
+  - include:
+      file: db/changelog/2025/09/add_npc.sql
+  - include:
+      file: db/changelog/2025/09/add_start_npc_to_training_camp_dungeon.sql

@@ -1,8 +1,7 @@
 -- liquibase formatted sql
 
--- changeset author:vladislavdunin:44
+-- changeset wladw:1758048549-44
 -- comment: Create admin user
-
 INSERT INTO users (login, password, email, is_enabled, created_at, updated_at)
 VALUES (
            'admin',
@@ -13,7 +12,7 @@ VALUES (
            CURRENT_TIMESTAMP
        );
 
--- changeset author:vladislavdunin:45
+-- changeset wladw:1758048550-45
 -- comment: add permissions to admin user
 INSERT INTO role (user_id, role_name, created_at)
 VALUES (
@@ -22,7 +21,7 @@ VALUES (
             CURRENT_TIMESTAMP
        );
 
--- changeset author:vladislavdunin:46
+-- changeset wladw:1758048551-46
 -- comment: add permissions to admin user
 INSERT INTO permissions (permission_type, role_id, created_at)
 VALUES

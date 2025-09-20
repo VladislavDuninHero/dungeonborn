@@ -6,6 +6,7 @@ import com.game.dungeonborn.entity.character.CharacterEquipment
 import com.game.dungeonborn.entity.item.Item
 import com.game.dungeonborn.entity.character.CharacterClass
 import com.game.dungeonborn.entity.character.CharacterInventory
+import com.game.dungeonborn.entity.dungeon.Dungeon
 import com.game.dungeonborn.enums.stat.MainStat
 import com.game.dungeonborn.enums.stat.SecondaryStat
 import com.game.dungeonborn.exception.character.CharacterNameIsTakenException

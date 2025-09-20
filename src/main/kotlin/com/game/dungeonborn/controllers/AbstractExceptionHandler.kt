@@ -34,7 +34,7 @@ abstract class AbstractExceptionHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun onServiceErrorException(ex: HttpMessageNotReadableException): ValidationExceptionDTO<ServiceExceptionDTO> {
-        val userErrorDTO: ServiceExceptionDTO = ServiceExceptionDTO(
+        val userErrorDTO = ServiceExceptionDTO(
             ErrorCode.SERVICE_ERROR.name,
             ex.localizedMessage
         )

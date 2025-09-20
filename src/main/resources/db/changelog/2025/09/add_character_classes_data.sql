@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset author:vladislavdunin:24
+-- changeset wladw:1758048552-47
 -- comment: Insert all character classes
 INSERT INTO character_classes (name,
                                class_type,

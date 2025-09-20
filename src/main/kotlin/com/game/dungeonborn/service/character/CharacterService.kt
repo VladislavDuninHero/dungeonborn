@@ -13,6 +13,7 @@ import com.game.dungeonborn.extensions.stats.CharacterStatsMapper
 import com.game.dungeonborn.repositories.CharacterClassesRepository
 import com.game.dungeonborn.repositories.CharacterRepository
 import com.game.dungeonborn.repositories.CharacterStatsRepository
+import com.game.dungeonborn.service.dungeon.DungeonUtils
 import com.game.dungeonborn.service.stat.CharacterStatsUtils
 import com.game.dungeonborn.service.utils.character.CharacterUtils
 import com.game.dungeonborn.service.utils.user.UserUtils
@@ -29,7 +30,8 @@ class CharacterService(
     private val characterMapper: CharacterMapper,
     private val updateCharacterValidationManager: UpdateCharacterValidationManager,
     private val characterStatsUtils: CharacterStatsUtils,
-    private val characterStatsMapper: CharacterStatsMapper
+    private val characterStatsMapper: CharacterStatsMapper,
+    private val dungeonUtils: DungeonUtils
 ) {
 
     fun createCharacter(character: CreateCharacterDTO): CreateCharacterResponseDTO {
@@ -138,9 +140,11 @@ class CharacterService(
     fun selectCharacter(selectCharacterDTO: SelectCharacterDTO) : SelectCharacterResponseDTO {
         val character = characterMapper.toCharacterDTO(characterUtils.findCharacterById(selectCharacterDTO.characterId));
 
+        val availableDungeons = dungeonUtils.getAvailableDungeonsForCharacter(selectCharacterDTO.characterId);
+
         return SelectCharacterResponseDTO(
             character,
-            "1"
+            availableDungeons
         )
     }
 }

@@ -1,6 +1,6 @@
 -- liquibase formatted sql
 
--- changeset author:vladislavdunin:25
+-- changeset wladw:1758048553-48
 -- comment: Insert all character levels bonus
 
 INSERT INTO character_level_bonus (

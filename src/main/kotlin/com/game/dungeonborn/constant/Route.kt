@@ -8,6 +8,7 @@ object Route {
     const val API_ADMIN_USER_CREATE_ROUTE = "/user/create"
     const val API_USER_TOKEN_REFRESH_ROUTE = "/auth/refresh"
     const val API_CHARACTERS_ROUTE = "/api/v1/characters"
+    const val API_DUNGEON_ROUTE = "/api/v1/dungeon"
 
     const val API_FULL_REGISTRATION_ROUTE = "/api/v1/user/registration"
     const val API_FULL_LOGIN_ROUTE = "/api/v1/user/login"
@@ -22,6 +23,7 @@ object Route {
     const val API_RECOVERY_ROUTE = "/recovery/{id}"
     const val API_BOOTSTRAP_ROUTE = "/{login}/bootstrap"
     const val API_SELECT_ROUTE = "/select"
+    const val API_GET_ALL_ROUTE = "/all"
 
     const val API_GET_ALL_CHARACTERS_ROUTE = "/{id}/characters"
     const val API_UPDATE_CHARACTER_ROUTE = "/update"
