@@ -4,5 +4,6 @@ enum class ItemQuality {
     COMMON,
     RARE,
     EPIC,
-    LEGENDARY
+    LEGENDARY,
+    UNKNOWN
 }

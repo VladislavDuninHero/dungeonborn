@@ -3,6 +3,10 @@ package com.game.dungeonborn.controllers.character
 import com.game.dungeonborn.constant.Message
 import com.game.dungeonborn.constant.Route
 import com.game.dungeonborn.dto.character.*
+import com.game.dungeonborn.dto.character.inventory.AddToInventoryDTO
+import com.game.dungeonborn.dto.character.inventory.AddToInventoryResponseDTO
+import com.game.dungeonborn.dto.character.inventory.DeleteFromInventoryDTO
+import com.game.dungeonborn.dto.character.inventory.DeleteFromInventoryResponseDTO
 import com.game.dungeonborn.dto.official.SuccessMessageDTO
 import com.game.dungeonborn.service.character.CharacterService
 import jakarta.validation.constraints.NotNull
@@ -60,10 +64,30 @@ class CharactersController(
     @PostMapping(Route.API_SELECT_ROUTE)
     @PreAuthorize("hasAuthority('READ_CHAR')")
     fun selectCharacter(
-        @RequestBody selectCharacterDTO: SelectCharacterDTO,
+        @RequestBody @Validated selectCharacterDTO: SelectCharacterDTO,
     ) : ResponseEntity<SelectCharacterResponseDTO> {
         val selectedCharacterResponse = characterService.selectCharacter(selectCharacterDTO);
 
         return ResponseEntity.ok(selectedCharacterResponse);
+    }
+
+    @PostMapping(Route.API_CHARACTER_INVENTORY_ADD)
+    @PreAuthorize("hasAuthority('UPDATE_CHAR')")
+    fun addToInventory(
+        @RequestBody @Validated addToInventory: AddToInventoryDTO,
+    ) : ResponseEntity<AddToInventoryResponseDTO> {
+        val addedToInventory = characterService.addToInventory(addToInventory);
+
+        return ResponseEntity.ok(addedToInventory);
+    }
+
+    @DeleteMapping(Route.API_CHARACTER_INVENTORY_DELETE)
+    @PreAuthorize("hasAuthority('UPDATE_CHAR')")
+    fun deleteFromInventory(
+        @RequestBody @Validated deleteFromInventoryDTO: DeleteFromInventoryDTO,
+    ) : ResponseEntity<DeleteFromInventoryResponseDTO> {
+        val deletedFromInventory = characterService.deleteFromInventory(deleteFromInventoryDTO);
+
+        return ResponseEntity.ok(deletedFromInventory);
     }
 }

@@ -17,14 +17,14 @@ class DungeonController(
     private val dungeonService: DungeonService,
 ) {
 
-//    @GetMapping(Route.API_GET_ROUTE)
-//    fun getDungeon(
-//        @PathVariable @NotNull id: Long,
-//    ): ResponseEntity<DungeonDTO> {
-////        val dungeon = dungeonService.getDungeon(id);
-//
-//        return ResponseEntity.ok(dungeon);
-//    }
+    @GetMapping(Route.API_GET_ROUTE)
+    fun getDungeon(
+        @PathVariable @NotNull id: Long,
+    ): ResponseEntity<DungeonDTO> {
+        val dungeon = dungeonService.getDungeon(id);
+
+        return ResponseEntity.ok(dungeon);
+    }
 
     @GetMapping(Route.API_GET_ALL_ROUTE)
     fun getAllDungeons(): ResponseEntity<List<DungeonSlimDTO>> {

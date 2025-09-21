@@ -21,4 +21,7 @@ object ExceptionMessage {
     const val CHARACTER_STATS_NOT_FOUND : String = "Character stats not found";
     const val USER_IS_NOT_CHARACTER_OWNER : String = "User %s is not character %s owner";
     const val NOT_IMPLEMENTED : String = "%s not implemented";
+    const val DUNGEON_NOT_FOUND : String = "Dungeon not found";
+    const val ITEM_NOT_FOUND : String = "Item not found";
+    const val INVENTORY_NOT_FOUND : String = "Inventory not found";
 }

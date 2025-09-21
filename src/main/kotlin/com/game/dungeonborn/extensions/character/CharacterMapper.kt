@@ -4,6 +4,9 @@ import com.game.dungeonborn.dto.character.CharacterDTO
 import com.game.dungeonborn.dto.character.CharacterSlimDTO
 import com.game.dungeonborn.dto.item.ItemDTO
 import com.game.dungeonborn.entity.character.Character
+import com.game.dungeonborn.enums.item.ItemQuality
+import com.game.dungeonborn.enums.item.ItemType
+import com.game.dungeonborn.enums.item.SlotType
 import com.game.dungeonborn.exception.RequiredFieldException
 import com.game.dungeonborn.extensions.stats.CharacterStatsMapper
 import com.game.dungeonborn.service.stat.CharacterStatsUtils
@@ -20,11 +23,41 @@ class CharacterMapper(
         val characterId = character.id ?: throw RequiredFieldException("Character id is required");
 
         val mappedEquipment = characterUtils.convertCharacterEquipmentToList(character.characterEquipment)
-            .filterNotNull().map { ItemDTO(it.name) }
+            .filterNotNull().map {
+                ItemDTO(
+                    it.id ?: 0,
+                    it.name,
+                    it.type,
+                    it.slotType,
+                    it.itemLevel,
+                    it.quality,
+                    it.stamina,
+                    it.strength,
+                    it.intellect,
+                    it.agility,
+                    it.criticalChance,
+                    it.criticalPower,
+                    it.armor
+                )
+            }
         val characterClass = character.characterClass?.name;
         val characterStats = characterStatsUtils.findCharacterStatsByCharacterIdAndGet(characterId);
         val mappedInventory = character.characterInventory?.items?.map {
-            ItemDTO(it.name);
+            ItemDTO(
+                it.item?.id ?: 0,
+                it.item?.name ?: "Unknown",
+                it.item?.type ?: ItemType.UNKNOWN,
+                it.item?.slotType ?: SlotType.UNKNOWN,
+                it.item?.itemLevel ?: 0,
+                it.item?.quality ?: ItemQuality.UNKNOWN,
+                it.item?.stamina ?: 0.0,
+                it.item?.strength ?: 0.0,
+                it.item?.intellect ?: 0.0,
+                it.item?.agility ?: 0.0,
+                it.item?.criticalChance ?: 0.0,
+                it.item?.criticalPower ?: 0.0,
+                it.item?.armor ?: 0.0,
+            );
         }.orEmpty();
 
         return CharacterDTO(

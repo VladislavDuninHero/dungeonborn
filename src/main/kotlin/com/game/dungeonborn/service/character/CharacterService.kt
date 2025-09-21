@@ -2,23 +2,29 @@ package com.game.dungeonborn.service.character
 
 import com.game.dungeonborn.constant.ExceptionMessage
 import com.game.dungeonborn.dto.character.*
+import com.game.dungeonborn.dto.character.inventory.*
 import com.game.dungeonborn.dto.item.ItemDTO
-import com.game.dungeonborn.entity.character.Character
-import com.game.dungeonborn.entity.character.CharacterEquipment
-import com.game.dungeonborn.entity.character.CharacterInventory
-import com.game.dungeonborn.entity.character.CharacterStats
+import com.game.dungeonborn.entity.character.*
+import com.game.dungeonborn.enums.item.ItemQuality
+import com.game.dungeonborn.enums.item.ItemType
+import com.game.dungeonborn.enums.item.SlotType
 import com.game.dungeonborn.exception.RequiredFieldException
+import com.game.dungeonborn.exception.items.ItemNotFoundException
 import com.game.dungeonborn.extensions.character.CharacterMapper
 import com.game.dungeonborn.extensions.stats.CharacterStatsMapper
 import com.game.dungeonborn.repositories.CharacterClassesRepository
+import com.game.dungeonborn.repositories.CharacterInventoryRepository
 import com.game.dungeonborn.repositories.CharacterRepository
 import com.game.dungeonborn.repositories.CharacterStatsRepository
 import com.game.dungeonborn.service.dungeon.DungeonUtils
 import com.game.dungeonborn.service.stat.CharacterStatsUtils
 import com.game.dungeonborn.service.utils.character.CharacterUtils
+import com.game.dungeonborn.service.utils.inventory.CharacterInventoryUtils
+import com.game.dungeonborn.service.utils.item.ItemsUtils
 import com.game.dungeonborn.service.utils.user.UserUtils
 import com.game.dungeonborn.service.validation.character.UpdateCharacterValidationManager
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class CharacterService(
@@ -31,9 +37,13 @@ class CharacterService(
     private val updateCharacterValidationManager: UpdateCharacterValidationManager,
     private val characterStatsUtils: CharacterStatsUtils,
     private val characterStatsMapper: CharacterStatsMapper,
-    private val dungeonUtils: DungeonUtils
+    private val dungeonUtils: DungeonUtils,
+    private val itemsUtils: ItemsUtils,
+    private val characterInventoryUtils: CharacterInventoryUtils,
+    private val characterInventoryRepository: CharacterInventoryRepository
 ) {
 
+    @Transactional
     fun createCharacter(character: CreateCharacterDTO): CreateCharacterResponseDTO {
         characterUtils.validateCharacterName(character.name);
 
@@ -92,11 +102,41 @@ class CharacterService(
         val character = characterUtils.findCharacterById(id);
 
         val mappedEquipment = characterUtils.convertCharacterEquipmentToList(character.characterEquipment)
-            .filterNotNull().map { ItemDTO(it.name) }
+            .filterNotNull().map {
+                ItemDTO(
+                    it.id ?: 0,
+                    it.name,
+                    it.type,
+                    it.slotType,
+                    it.itemLevel,
+                    it.quality,
+                    it.stamina,
+                    it.strength,
+                    it.intellect,
+                    it.agility,
+                    it.criticalChance,
+                    it.criticalPower,
+                    it.armor
+                )
+            }
         val characterClass = character.characterClass?.name;
         val characterStats = characterStatsUtils.findCharacterStatsByCharacterIdAndGet(id);
         val mappedInventory = character.characterInventory?.items?.map {
-            ItemDTO(it.name);
+            ItemDTO(
+                it.item?.id ?: 0,
+                it.item?.name ?: "Unknown",
+                it.item?.type ?: ItemType.UNKNOWN,
+                it.item?.slotType ?: SlotType.UNKNOWN,
+                it.item?.itemLevel ?: 0,
+                it.item?.quality ?: ItemQuality.UNKNOWN,
+                it.item?.stamina ?: 0.0,
+                it.item?.strength ?: 0.0,
+                it.item?.intellect ?: 0.0,
+                it.item?.agility ?: 0.0,
+                it.item?.criticalChance ?: 0.0,
+                it.item?.criticalPower ?: 0.0,
+                it.item?.armor ?: 0.0,
+            );
         }.orEmpty();
 
 
@@ -119,6 +159,7 @@ class CharacterService(
         }
     }
 
+    @Transactional
     fun updateCharacter(updateCharacterDTO: UpdateCharacterDTO): CharacterDTO {
         updateCharacterValidationManager.validate(updateCharacterDTO);
 
@@ -131,6 +172,7 @@ class CharacterService(
         return characterMapper.toCharacterDTO(updatedCharacter);
     }
 
+    @Transactional
     fun deleteCharacter(id: Long) {
         val character = characterUtils.findCharacterById(id);
 
@@ -145,6 +187,82 @@ class CharacterService(
         return SelectCharacterResponseDTO(
             character,
             availableDungeons
+        )
+    }
+
+    @Transactional
+    fun addToInventory(addToInventoryDTO: AddToInventoryDTO): AddToInventoryResponseDTO {
+        val foundCharacter = characterUtils.findCharacterById(addToInventoryDTO.characterId)
+        val foundItem = itemsUtils.findItemByIdAndGet(addToInventoryDTO.itemId)
+        val inventory = foundCharacter.characterInventory;
+        val inventoryItems = inventory?.items ?: mutableListOf();
+
+        val newInventoryItem = CharacterInventoryItem();
+        newInventoryItem.item = foundItem;
+        newInventoryItem.inventory = inventory;
+
+        characterInventoryUtils.addItemToInventory(inventoryItems, newInventoryItem);
+
+        val savedCharacter = characterRepository.save(foundCharacter);
+
+        val updatedInventoryItems = savedCharacter.characterInventory?.items ?: emptyList();
+
+        return AddToInventoryResponseDTO(
+            addToInventoryDTO.characterId,
+            InventoryDTO(
+                inventory?.id,
+                updatedInventoryItems.map {
+                    ItemDTO(
+                        it.item?.id ?: 0,
+                        it.item?.name ?: "Unknown",
+                        it.item?.type ?: ItemType.UNKNOWN,
+                        it.item?.slotType ?: SlotType.UNKNOWN,
+                        it.item?.itemLevel ?: 0,
+                        it.item?.quality ?: ItemQuality.UNKNOWN,
+                        it.item?.stamina ?: 0.0,
+                        it.item?.strength ?: 0.0,
+                        it.item?.intellect ?: 0.0,
+                        it.item?.agility ?: 0.0,
+                        it.item?.criticalChance ?: 0.0,
+                        it.item?.criticalPower ?: 0.0,
+                        it.item?.armor ?: 0.0,
+                    )
+                }
+            )
+        )
+    }
+
+    @Transactional
+    fun deleteFromInventory(deleteFromInventoryDTO: DeleteFromInventoryDTO) : DeleteFromInventoryResponseDTO {
+        val foundInventory = characterInventoryUtils.getCharacterInventoryByIdAndGet(deleteFromInventoryDTO.inventoryId);
+        val foundItem = foundInventory.items
+            .find {
+                it.id == deleteFromInventoryDTO.itemId
+            } ?: throw ItemNotFoundException(ExceptionMessage.ITEM_NOT_FOUND);
+
+        foundInventory.items.remove(foundItem);
+
+        val updatedInventory = characterInventoryRepository.save(foundInventory);
+
+        return DeleteFromInventoryResponseDTO(
+            updatedInventory.id ?: 0,
+            updatedInventory.items.map {
+                ItemDTO(
+                    it.item?.id ?: 0,
+                    it.item?.name ?: "Unknown",
+                    it.item?.type ?: ItemType.UNKNOWN,
+                    it.item?.slotType ?: SlotType.UNKNOWN,
+                    it.item?.itemLevel ?: 0,
+                    it.item?.quality ?: ItemQuality.UNKNOWN,
+                    it.item?.stamina ?: 0.0,
+                    it.item?.strength ?: 0.0,
+                    it.item?.intellect ?: 0.0,
+                    it.item?.agility ?: 0.0,
+                    it.item?.criticalChance ?: 0.0,
+                    it.item?.criticalPower ?: 0.0,
+                    it.item?.armor ?: 0.0,
+                )
+            }
         )
     }
 }
