@@ -29,4 +29,5 @@ object Route {
     const val API_UPDATE_CHARACTER_ROUTE = "/update"
     const val API_CHARACTER_INVENTORY_ADD = "/inventory/add"
     const val API_CHARACTER_INVENTORY_DELETE = "/inventory/delete"
+    const val API_CHARACTER_INVENTORY_CLEAR = "/inventory/{id}/clear"
 }

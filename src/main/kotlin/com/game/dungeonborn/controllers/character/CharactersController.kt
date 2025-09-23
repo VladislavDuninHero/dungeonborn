@@ -90,4 +90,14 @@ class CharactersController(
 
         return ResponseEntity.ok(deletedFromInventory);
     }
+
+    @DeleteMapping(Route.API_CHARACTER_INVENTORY_CLEAR)
+    @PreAuthorize("hasAuthority('UPDATE_CHAR')")
+    fun clearInventory(
+        @PathVariable @NotNull id: Long
+    ) : ResponseEntity<DeleteFromInventoryResponseDTO> {
+        val deletedFromInventory = characterService.clearInventory(id);
+
+        return ResponseEntity.ok(deletedFromInventory);
+    }
 }

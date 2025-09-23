@@ -265,4 +265,34 @@ class CharacterService(
             }
         )
     }
+
+    @Transactional
+    fun clearInventory(id: Long) : DeleteFromInventoryResponseDTO {
+        val foundInventory = characterInventoryUtils.getCharacterInventoryByIdAndGet(id);
+
+        foundInventory.items.clear();
+
+        val updatedInventory = characterInventoryRepository.save(foundInventory);
+
+        return DeleteFromInventoryResponseDTO(
+            updatedInventory.id ?: 0,
+            updatedInventory.items.map {
+                ItemDTO(
+                    it.item?.id ?: 0,
+                    it.item?.name ?: "Unknown",
+                    it.item?.type ?: ItemType.UNKNOWN,
+                    it.item?.slotType ?: SlotType.UNKNOWN,
+                    it.item?.itemLevel ?: 0,
+                    it.item?.quality ?: ItemQuality.UNKNOWN,
+                    it.item?.stamina ?: 0.0,
+                    it.item?.strength ?: 0.0,
+                    it.item?.intellect ?: 0.0,
+                    it.item?.agility ?: 0.0,
+                    it.item?.criticalChance ?: 0.0,
+                    it.item?.criticalPower ?: 0.0,
+                    it.item?.armor ?: 0.0,
+                )
+            }
+        )
+    }
 }
