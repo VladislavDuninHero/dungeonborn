@@ -2,6 +2,9 @@ package com.game.dungeonborn.service.character
 
 import com.game.dungeonborn.constant.ExceptionMessage
 import com.game.dungeonborn.dto.character.*
+import com.game.dungeonborn.dto.character.equipment.AddToEquipmentDTO
+import com.game.dungeonborn.dto.character.equipment.AddToEquipmentResponseDTO
+import com.game.dungeonborn.dto.character.equipment.EquipmentDTO
 import com.game.dungeonborn.dto.character.inventory.*
 import com.game.dungeonborn.dto.item.ItemDTO
 import com.game.dungeonborn.entity.character.*
@@ -122,21 +125,24 @@ class CharacterService(
         val characterClass = character.characterClass?.name;
         val characterStats = characterStatsUtils.findCharacterStatsByCharacterIdAndGet(id);
         val mappedInventory = character.characterInventory?.items?.map {
-            ItemDTO(
-                it.item?.id ?: 0,
-                it.item?.name ?: "Unknown",
-                it.item?.type ?: ItemType.UNKNOWN,
-                it.item?.slotType ?: SlotType.UNKNOWN,
-                it.item?.itemLevel ?: 0,
-                it.item?.quality ?: ItemQuality.UNKNOWN,
-                it.item?.stamina ?: 0.0,
-                it.item?.strength ?: 0.0,
-                it.item?.intellect ?: 0.0,
-                it.item?.agility ?: 0.0,
-                it.item?.criticalChance ?: 0.0,
-                it.item?.criticalPower ?: 0.0,
-                it.item?.armor ?: 0.0,
-            );
+            InventoryItemDTO(
+                it.id ?: 0,
+                ItemDTO(
+                    it.item?.id ?: 0,
+                    it.item?.name ?: "Unknown",
+                    it.item?.type ?: ItemType.UNKNOWN,
+                    it.item?.slotType ?: SlotType.UNKNOWN,
+                    it.item?.itemLevel ?: 0,
+                    it.item?.quality ?: ItemQuality.UNKNOWN,
+                    it.item?.stamina ?: 0.0,
+                    it.item?.strength ?: 0.0,
+                    it.item?.intellect ?: 0.0,
+                    it.item?.agility ?: 0.0,
+                    it.item?.criticalChance ?: 0.0,
+                    it.item?.criticalPower ?: 0.0,
+                    it.item?.armor ?: 0.0,
+                )
+            )
         }.orEmpty();
 
 
@@ -212,20 +218,23 @@ class CharacterService(
             InventoryDTO(
                 inventory?.id,
                 updatedInventoryItems.map {
-                    ItemDTO(
-                        it.item?.id ?: 0,
-                        it.item?.name ?: "Unknown",
-                        it.item?.type ?: ItemType.UNKNOWN,
-                        it.item?.slotType ?: SlotType.UNKNOWN,
-                        it.item?.itemLevel ?: 0,
-                        it.item?.quality ?: ItemQuality.UNKNOWN,
-                        it.item?.stamina ?: 0.0,
-                        it.item?.strength ?: 0.0,
-                        it.item?.intellect ?: 0.0,
-                        it.item?.agility ?: 0.0,
-                        it.item?.criticalChance ?: 0.0,
-                        it.item?.criticalPower ?: 0.0,
-                        it.item?.armor ?: 0.0,
+                    InventoryItemDTO(
+                        it.id ?: 0,
+                        ItemDTO(
+                            it.item?.id ?: 0,
+                            it.item?.name ?: "Unknown",
+                            it.item?.type ?: ItemType.UNKNOWN,
+                            it.item?.slotType ?: SlotType.UNKNOWN,
+                            it.item?.itemLevel ?: 0,
+                            it.item?.quality ?: ItemQuality.UNKNOWN,
+                            it.item?.stamina ?: 0.0,
+                            it.item?.strength ?: 0.0,
+                            it.item?.intellect ?: 0.0,
+                            it.item?.agility ?: 0.0,
+                            it.item?.criticalChance ?: 0.0,
+                            it.item?.criticalPower ?: 0.0,
+                            it.item?.armor ?: 0.0,
+                        )
                     )
                 }
             )
@@ -247,20 +256,23 @@ class CharacterService(
         return DeleteFromInventoryResponseDTO(
             updatedInventory.id ?: 0,
             updatedInventory.items.map {
-                ItemDTO(
-                    it.item?.id ?: 0,
-                    it.item?.name ?: "Unknown",
-                    it.item?.type ?: ItemType.UNKNOWN,
-                    it.item?.slotType ?: SlotType.UNKNOWN,
-                    it.item?.itemLevel ?: 0,
-                    it.item?.quality ?: ItemQuality.UNKNOWN,
-                    it.item?.stamina ?: 0.0,
-                    it.item?.strength ?: 0.0,
-                    it.item?.intellect ?: 0.0,
-                    it.item?.agility ?: 0.0,
-                    it.item?.criticalChance ?: 0.0,
-                    it.item?.criticalPower ?: 0.0,
-                    it.item?.armor ?: 0.0,
+                InventoryItemDTO(
+                    it.id ?: 0,
+                    ItemDTO(
+                        it.item?.id ?: 0,
+                        it.item?.name ?: "Unknown",
+                        it.item?.type ?: ItemType.UNKNOWN,
+                        it.item?.slotType ?: SlotType.UNKNOWN,
+                        it.item?.itemLevel ?: 0,
+                        it.item?.quality ?: ItemQuality.UNKNOWN,
+                        it.item?.stamina ?: 0.0,
+                        it.item?.strength ?: 0.0,
+                        it.item?.intellect ?: 0.0,
+                        it.item?.agility ?: 0.0,
+                        it.item?.criticalChance ?: 0.0,
+                        it.item?.criticalPower ?: 0.0,
+                        it.item?.armor ?: 0.0,
+                    )
                 )
             }
         )
@@ -277,22 +289,64 @@ class CharacterService(
         return DeleteFromInventoryResponseDTO(
             updatedInventory.id ?: 0,
             updatedInventory.items.map {
-                ItemDTO(
-                    it.item?.id ?: 0,
-                    it.item?.name ?: "Unknown",
-                    it.item?.type ?: ItemType.UNKNOWN,
-                    it.item?.slotType ?: SlotType.UNKNOWN,
-                    it.item?.itemLevel ?: 0,
-                    it.item?.quality ?: ItemQuality.UNKNOWN,
-                    it.item?.stamina ?: 0.0,
-                    it.item?.strength ?: 0.0,
-                    it.item?.intellect ?: 0.0,
-                    it.item?.agility ?: 0.0,
-                    it.item?.criticalChance ?: 0.0,
-                    it.item?.criticalPower ?: 0.0,
-                    it.item?.armor ?: 0.0,
+                InventoryItemDTO(
+                    it.id ?: 0,
+                    ItemDTO(
+                        it.item?.id ?: 0,
+                        it.item?.name ?: "Unknown",
+                        it.item?.type ?: ItemType.UNKNOWN,
+                        it.item?.slotType ?: SlotType.UNKNOWN,
+                        it.item?.itemLevel ?: 0,
+                        it.item?.quality ?: ItemQuality.UNKNOWN,
+                        it.item?.stamina ?: 0.0,
+                        it.item?.strength ?: 0.0,
+                        it.item?.intellect ?: 0.0,
+                        it.item?.agility ?: 0.0,
+                        it.item?.criticalChance ?: 0.0,
+                        it.item?.criticalPower ?: 0.0,
+                        it.item?.armor ?: 0.0,
+                    )
                 )
             }
         )
+    }
+
+    @Transactional
+    fun addToEquipment(addToEquipmentDTO: AddToEquipmentDTO) : AddToEquipmentResponseDTO {
+        val foundCharacter = characterUtils.findCharacterById(addToEquipmentDTO.characterId);
+        val inventory = foundCharacter.characterInventory ?: throw RequiredFieldException("Inventory is required");
+        val equipment = foundCharacter.characterEquipment ?: throw RequiredFieldException("Equipment is required");
+
+        val foundItem = inventory.items.find { it.id == addToEquipmentDTO.inventoryItemId }
+            ?: throw ItemNotFoundException(ExceptionMessage.ITEM_NOT_FOUND);
+
+        when(foundItem.item?.slotType) {
+            SlotType.HEAD -> equipment.headItem = foundItem.item;
+            SlotType.SHOULDERS -> equipment.shouldersItem = foundItem.item;
+            SlotType.CHEST -> equipment.chestItem = foundItem.item;
+            SlotType.HANDS -> equipment.handsItem = foundItem.item;
+            SlotType.LEGS -> equipment.legsItem = foundItem.item;
+            SlotType.FEET -> equipment.feetItem = foundItem.item;
+            SlotType.WEAPON -> equipment.weaponItem = foundItem.item;
+            else -> throw RequiredFieldException("Slot type is required");
+        }
+
+        val findItemToRemoveFromInventory = inventory.items.find { it.id == addToEquipmentDTO.inventoryItemId };
+        inventory.items.remove(findItemToRemoveFromInventory);
+
+        val updatedCharacter = characterRepository.save(foundCharacter);
+
+        return AddToEquipmentResponseDTO(
+            EquipmentDTO(
+                equipment.id ?: 0,
+                updatedCharacter.characterEquipment?.headItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.shouldersItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.chestItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.handsItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.legsItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.feetItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.weaponItem?.id ?: 0,
+            )
+        );
     }
 }

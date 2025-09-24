@@ -4,5 +4,5 @@ import com.game.dungeonborn.dto.item.ItemDTO
 
 data class DeleteFromInventoryResponseDTO(
     var inventoryId: Long,
-    var inventory: List<ItemDTO>
+    var inventory: List<InventoryItemDTO>
 )

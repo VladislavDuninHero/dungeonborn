@@ -3,6 +3,8 @@ package com.game.dungeonborn.controllers.character
 import com.game.dungeonborn.constant.Message
 import com.game.dungeonborn.constant.Route
 import com.game.dungeonborn.dto.character.*
+import com.game.dungeonborn.dto.character.equipment.AddToEquipmentDTO
+import com.game.dungeonborn.dto.character.equipment.AddToEquipmentResponseDTO
 import com.game.dungeonborn.dto.character.inventory.AddToInventoryDTO
 import com.game.dungeonborn.dto.character.inventory.AddToInventoryResponseDTO
 import com.game.dungeonborn.dto.character.inventory.DeleteFromInventoryDTO
@@ -97,6 +99,16 @@ class CharactersController(
         @PathVariable @NotNull id: Long
     ) : ResponseEntity<DeleteFromInventoryResponseDTO> {
         val deletedFromInventory = characterService.clearInventory(id);
+
+        return ResponseEntity.ok(deletedFromInventory);
+    }
+
+    @PostMapping(Route.API_CHARACTER_EQUIPMENT_ADD)
+    @PreAuthorize("hasAuthority('UPDATE_CHAR')")
+    fun addToEquipment(
+        @RequestBody @Validated addToEquipmentDTO: AddToEquipmentDTO
+    ) : ResponseEntity<AddToEquipmentResponseDTO> {
+        val deletedFromInventory = characterService.addToEquipment(addToEquipmentDTO);
 
         return ResponseEntity.ok(deletedFromInventory);
     }
