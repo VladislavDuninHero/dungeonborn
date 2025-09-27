@@ -2,12 +2,11 @@ package com.game.dungeonborn.service.character
 
 import com.game.dungeonborn.constant.ExceptionMessage
 import com.game.dungeonborn.dto.character.*
-import com.game.dungeonborn.dto.character.equipment.AddToEquipmentDTO
-import com.game.dungeonborn.dto.character.equipment.AddToEquipmentResponseDTO
-import com.game.dungeonborn.dto.character.equipment.EquipmentDTO
+import com.game.dungeonborn.dto.character.equipment.*
 import com.game.dungeonborn.dto.character.inventory.*
 import com.game.dungeonborn.dto.item.ItemDTO
 import com.game.dungeonborn.entity.character.*
+import com.game.dungeonborn.entity.item.Item
 import com.game.dungeonborn.enums.item.ItemQuality
 import com.game.dungeonborn.enums.item.ItemType
 import com.game.dungeonborn.enums.item.SlotType
@@ -320,19 +319,51 @@ class CharacterService(
         val foundItem = inventory.items.find { it.id == addToEquipmentDTO.inventoryItemId }
             ?: throw ItemNotFoundException(ExceptionMessage.ITEM_NOT_FOUND);
 
+        var currentEquipmentItem: Item ?= null;
+
         when(foundItem.item?.slotType) {
-            SlotType.HEAD -> equipment.headItem = foundItem.item;
-            SlotType.SHOULDERS -> equipment.shouldersItem = foundItem.item;
-            SlotType.CHEST -> equipment.chestItem = foundItem.item;
-            SlotType.HANDS -> equipment.handsItem = foundItem.item;
-            SlotType.LEGS -> equipment.legsItem = foundItem.item;
-            SlotType.FEET -> equipment.feetItem = foundItem.item;
-            SlotType.WEAPON -> equipment.weaponItem = foundItem.item;
+            SlotType.HEAD -> {
+                currentEquipmentItem = equipment.headItem;
+                equipment.headItem = foundItem.item
+            };
+            SlotType.SHOULDERS -> {
+                currentEquipmentItem = equipment.shouldersItem;
+                equipment.shouldersItem = foundItem.item
+            };
+            SlotType.CHEST -> {
+                currentEquipmentItem = equipment.chestItem;
+                equipment.chestItem = foundItem.item
+            };
+            SlotType.HANDS -> {
+                currentEquipmentItem = equipment.handsItem;
+                equipment.handsItem = foundItem.item
+            };
+            SlotType.LEGS -> {
+                currentEquipmentItem = equipment.legsItem;
+                equipment.legsItem = foundItem.item
+            };
+            SlotType.FEET -> {
+                currentEquipmentItem = equipment.feetItem;
+                equipment.feetItem = foundItem.item
+            };
+            SlotType.WEAPON -> {
+                currentEquipmentItem = equipment.weaponItem;
+                equipment.weaponItem = foundItem.item
+            };
             else -> throw RequiredFieldException("Slot type is required");
         }
 
         val findItemToRemoveFromInventory = inventory.items.find { it.id == addToEquipmentDTO.inventoryItemId };
         inventory.items.remove(findItemToRemoveFromInventory);
+
+        if (currentEquipmentItem != null) {
+            val newInventoryItem = CharacterInventoryItem();
+            newInventoryItem.id = findItemToRemoveFromInventory?.id;
+            newInventoryItem.item = currentEquipmentItem;
+            newInventoryItem.inventory = inventory;
+
+            inventory.items.add(newInventoryItem);
+        }
 
         val updatedCharacter = characterRepository.save(foundCharacter);
 
@@ -346,6 +377,119 @@ class CharacterService(
                 updatedCharacter.characterEquipment?.legsItem?.id ?: 0,
                 updatedCharacter.characterEquipment?.feetItem?.id ?: 0,
                 updatedCharacter.characterEquipment?.weaponItem?.id ?: 0,
+            )
+        );
+    }
+
+    @Transactional
+    fun deleteFromEquipment(deleteFromEquipmentDTO: DeleteFromEquipmentDTO) : DeleteFromEquipmentResponseDTO {
+        val foundCharacter = characterUtils.findCharacterById(deleteFromEquipmentDTO.characterId);
+        val equipment = foundCharacter.characterEquipment ?: throw RequiredFieldException("Equipment is required");
+
+
+        when(deleteFromEquipmentDTO.slotType) {
+            SlotType.HEAD -> equipment.headItem = null;
+            SlotType.SHOULDERS -> equipment.shouldersItem = null;
+            SlotType.CHEST -> equipment.chestItem = null;
+            SlotType.HANDS -> equipment.handsItem = null;
+            SlotType.LEGS -> equipment.legsItem = null;
+            SlotType.FEET -> equipment.feetItem = null;
+            SlotType.WEAPON -> equipment.weaponItem = null;
+            else -> throw RequiredFieldException("Slot type is required");
+        }
+
+        val updatedCharacter = characterRepository.save(foundCharacter);
+
+        return DeleteFromEquipmentResponseDTO(
+            EquipmentDTO(
+                equipment.id ?: 0,
+                updatedCharacter.characterEquipment?.headItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.shouldersItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.chestItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.handsItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.legsItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.feetItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.weaponItem?.id ?: 0,
+            )
+        );
+    }
+
+    @Transactional
+    fun deleteFromEquipmentAndMoveToInventory (
+        deleteFromEquipmentDTO: DeleteFromEquipmentDTO
+    ): DeleteFromEquipmentAndMoveToInventoryResponseDTO {
+        val foundCharacter = characterUtils.findCharacterById(deleteFromEquipmentDTO.characterId);
+        val equipment = foundCharacter.characterEquipment ?: throw RequiredFieldException("Equipment is required");
+        val inventory = foundCharacter.characterInventory;
+        val inventoryItems = inventory?.items ?: mutableListOf();
+
+        val foundItemInEquipment = when(deleteFromEquipmentDTO.slotType) {
+            SlotType.HEAD -> equipment.headItem;
+            SlotType.SHOULDERS -> equipment.shouldersItem;
+            SlotType.CHEST -> equipment.chestItem;
+            SlotType.HANDS -> equipment.handsItem;
+            SlotType.LEGS -> equipment.legsItem;
+            SlotType.FEET -> equipment.feetItem;
+            SlotType.WEAPON -> equipment.weaponItem;
+            else -> throw RequiredFieldException("Slot type is required");
+        }
+
+        if (foundItemInEquipment == null) {
+            throw ItemNotFoundException(ExceptionMessage.ITEM_NOT_FOUND);
+        }
+
+        val newInventoryItem = CharacterInventoryItem();
+        newInventoryItem.item = foundItemInEquipment;
+        newInventoryItem.inventory = inventory;
+
+        characterInventoryUtils.addItemToInventory(inventoryItems, newInventoryItem);
+
+        when(deleteFromEquipmentDTO.slotType) {
+            SlotType.HEAD -> equipment.headItem = null;
+            SlotType.SHOULDERS -> equipment.shouldersItem = null;
+            SlotType.CHEST -> equipment.chestItem = null;
+            SlotType.HANDS -> equipment.handsItem = null;
+            SlotType.LEGS -> equipment.legsItem = null;
+            SlotType.FEET -> equipment.feetItem = null;
+            SlotType.WEAPON -> equipment.weaponItem = null;
+            else -> throw RequiredFieldException("Slot type is required");
+        }
+
+        val updatedCharacter = characterRepository.save(foundCharacter);
+
+        return DeleteFromEquipmentAndMoveToInventoryResponseDTO(
+            EquipmentDTO(
+                equipment.id ?: 0,
+                updatedCharacter.characterEquipment?.headItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.shouldersItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.chestItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.handsItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.legsItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.feetItem?.id ?: 0,
+                updatedCharacter.characterEquipment?.weaponItem?.id ?: 0,
+            ),
+            InventoryDTO(
+                inventory?.id,
+                inventory?.items?.map {
+                    InventoryItemDTO(
+                        it.id ?: 0,
+                        ItemDTO(
+                            it.item?.id ?: 0,
+                            it.item?.name ?: "Unknown",
+                            it.item?.type ?: ItemType.UNKNOWN,
+                            it.item?.slotType ?: SlotType.UNKNOWN,
+                            it.item?.itemLevel ?: 0,
+                            it.item?.quality ?: ItemQuality.UNKNOWN,
+                            it.item?.stamina ?: 0.0,
+                            it.item?.strength ?: 0.0,
+                            it.item?.intellect ?: 0.0,
+                            it.item?.agility ?: 0.0,
+                            it.item?.criticalChance ?: 0.0,
+                            it.item?.criticalPower ?: 0.0,
+                            it.item?.armor ?: 0.0,
+                        )
+                    )
+                } ?: emptyList()
             )
         );
     }

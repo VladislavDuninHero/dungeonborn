@@ -3,8 +3,7 @@ package com.game.dungeonborn.controllers.character
 import com.game.dungeonborn.constant.Message
 import com.game.dungeonborn.constant.Route
 import com.game.dungeonborn.dto.character.*
-import com.game.dungeonborn.dto.character.equipment.AddToEquipmentDTO
-import com.game.dungeonborn.dto.character.equipment.AddToEquipmentResponseDTO
+import com.game.dungeonborn.dto.character.equipment.*
 import com.game.dungeonborn.dto.character.inventory.AddToInventoryDTO
 import com.game.dungeonborn.dto.character.inventory.AddToInventoryResponseDTO
 import com.game.dungeonborn.dto.character.inventory.DeleteFromInventoryDTO
@@ -108,8 +107,28 @@ class CharactersController(
     fun addToEquipment(
         @RequestBody @Validated addToEquipmentDTO: AddToEquipmentDTO
     ) : ResponseEntity<AddToEquipmentResponseDTO> {
-        val deletedFromInventory = characterService.addToEquipment(addToEquipmentDTO);
+        val addedToEquipment = characterService.addToEquipment(addToEquipmentDTO);
 
-        return ResponseEntity.ok(deletedFromInventory);
+        return ResponseEntity.ok(addedToEquipment);
+    }
+
+    @DeleteMapping(Route.API_CHARACTER_EQUIPMENT_DELETE)
+    @PreAuthorize("hasAuthority('UPDATE_CHAR')")
+    fun deleteFromEquipment(
+        @RequestBody @Validated deleteFromEquipmentDTO: DeleteFromEquipmentDTO
+    ) : ResponseEntity<DeleteFromEquipmentResponseDTO> {
+        val deletedFromEquipment = characterService.deleteFromEquipment(deleteFromEquipmentDTO);
+
+        return ResponseEntity.ok(deletedFromEquipment);
+    }
+
+    @PostMapping(Route.API_CHARACTER_EQUIPMENT_ITEM_MOVE_TO_INVENTORY)
+    @PreAuthorize("hasAuthority('UPDATE_CHAR')")
+    fun moveFromEquipmentToInventory(
+        @RequestBody @Validated deleteFromEquipmentDTO: DeleteFromEquipmentDTO
+    ) : ResponseEntity<DeleteFromEquipmentAndMoveToInventoryResponseDTO> {
+        val deletedFromEquipment = characterService.deleteFromEquipmentAndMoveToInventory(deleteFromEquipmentDTO);
+
+        return ResponseEntity.ok(deletedFromEquipment);
     }
 }

@@ -31,4 +31,6 @@ object Route {
     const val API_CHARACTER_INVENTORY_DELETE = "/inventory/delete"
     const val API_CHARACTER_INVENTORY_CLEAR = "/inventory/{id}/clear"
     const val API_CHARACTER_EQUIPMENT_ADD = "/equipment/add"
+    const val API_CHARACTER_EQUIPMENT_DELETE = "/equipment/delete"
+    const val API_CHARACTER_EQUIPMENT_ITEM_MOVE_TO_INVENTORY = "/equipment/move"
 }
