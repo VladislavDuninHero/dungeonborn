@@ -5,8 +5,7 @@ import com.game.dungeonborn.entity.character.Character
 import com.game.dungeonborn.entity.character.CharacterEquipment
 import com.game.dungeonborn.entity.item.Item
 import com.game.dungeonborn.entity.character.CharacterClass
-import com.game.dungeonborn.entity.character.CharacterInventory
-import com.game.dungeonborn.entity.dungeon.Dungeon
+import com.game.dungeonborn.enums.character.CharacterClass as CurrentCharacterClass
 import com.game.dungeonborn.enums.stat.MainStat
 import com.game.dungeonborn.enums.stat.SecondaryStat
 import com.game.dungeonborn.exception.character.CharacterNameIsTakenException
@@ -27,14 +26,19 @@ class CharacterUtils(
         return 0.0;
     }
 
-    fun calculateCharacterMana(intellect: Double, level: Int, characterId: Long? = null): Double {
+    fun calculateCharacterMana(
+        intellect: Double,
+        level: Int,
+        characterId: Long? = null,
+    ): Double {
         if (characterId != null) {
             val character = findCharacterById(characterId);
             val totalIntellect = character.characterStat?.totalIntellect ?: 0.0;
             val currentTotalMana = character.characterStat?.totalMana ?: 0.0;
+            val levelBonus = levelUtils.getLevelBonusByLevelNumber(level).bonusIntellect ?: 0.0;
 
             return currentTotalMana + (totalIntellect * mainStatsCoefficientsFactory
-                .getSecondaryStatCoefficient(MainStat.INTELLECT, SecondaryStat.MANA));
+                .getSecondaryStatCoefficient(MainStat.INTELLECT, SecondaryStat.MANA) * levelBonus);
         }
 
         val levelBonus = levelUtils.getLevelBonusByLevelNumber(level).bonusIntellect ?: 0.0;
@@ -45,21 +49,30 @@ class CharacterUtils(
         return totalMana;
     }
 
-    fun calculateCharacterGearScore(): Double {
-        return 0.0;
+    fun calculateEquipmentBonusCharacterHp(stamina: Double): Double {
+        val coefficient = mainStatsCoefficientsFactory.getSecondaryStatCoefficient(MainStat.STAMINA, SecondaryStat.HP);
+
+        return stamina * coefficient;
     }
 
-    fun calculateCharacterDamage(mainStat: MainStat, characterId: Long? = null): Double {
+    fun calculateEquipmentBonusCharacterMana(intellect: Double): Double {
+        val coefficient = mainStatsCoefficientsFactory.getSecondaryStatCoefficient(MainStat.INTELLECT, SecondaryStat.MANA);
+
+        return intellect * coefficient;
+    }
+
+    fun calculateEquipmentCharacterCriticalPower(criticalPower: Double): Double {
+        val coefficient = mainStatsCoefficientsFactory.getSecondaryStatCoefficient(MainStat.AGILITY, SecondaryStat.CRITICAL_POWER);
+
+        return criticalPower * coefficient;
+    }
+
+
+
+    fun calculateCharacterDamage(mainStat: MainStat, totalMainStat: Double): Double {
         val coefficient = mainStatsCoefficientsFactory.getSecondaryStatCoefficient(mainStat, SecondaryStat.DAMAGE);
 
-        if (characterId != null) {
-            val character = findCharacterById(characterId);
-            val currentTotalDamage = character.characterStat?.totalDamage ?: 0.0;
-
-
-        }
-
-        return 0.0;
+        return totalMainStat * coefficient;
     }
 
     fun calculateCharacterArmor(): Double {
@@ -139,4 +152,27 @@ class CharacterUtils(
         return equipmentList.sumOf { it?.agility ?: 0.0 }
     }
 
+    fun extractCriticalPowerFromEquipment(character: Character): Double {
+        val equipmentList = convertCharacterEquipmentToList(character.characterEquipment);
+
+        return equipmentList.sumOf { it?.criticalPower ?: 0.0 }
+    }
+
+    fun extractArmorFromEquipment(character: Character): Double {
+        val equipmentList = convertCharacterEquipmentToList(character.characterEquipment);
+
+        return equipmentList.sumOf { it?.armor ?: 0.0 }
+    }
+
+    fun extractCriticalChanceFromEquipment(character: Character): Double {
+        val equipmentList = convertCharacterEquipmentToList(character.characterEquipment);
+
+        return equipmentList.sumOf { it?.criticalChance ?: 0.0 }
+    }
+
+    fun extractGearScoreFromEquipment(character: Character): Double {
+        val equipmentList = convertCharacterEquipmentToList(character.characterEquipment);
+
+        return equipmentList.sumOf { it?.itemLevel ?: 0.0 }
+    }
 }

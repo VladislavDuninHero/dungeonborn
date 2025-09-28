@@ -9,7 +9,7 @@ data class ItemDTO(
     var name: String,
     var type: ItemType,
     var slot: SlotType,
-    var itemLevel: Int,
+    var itemLevel: Double,
     var quality: ItemQuality,
     var stamina: Double,
     var strength: Double,

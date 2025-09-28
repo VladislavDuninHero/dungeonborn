@@ -27,7 +27,7 @@ class Item(
     var slotType: SlotType,
 
     @Column(name = "item_level", nullable = false)
-    var itemLevel: Int,
+    var itemLevel: Double,
 
     @Column(name = "quality", nullable = false)
     @Enumerated(EnumType.STRING)

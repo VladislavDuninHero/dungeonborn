@@ -17,7 +17,8 @@ class MainStatCoefficientFactory(
             SecondaryStat.DAMAGE to 2.0
         ),
         MainStat.AGILITY to mapOf(
-            SecondaryStat.DAMAGE to 2.0
+            SecondaryStat.DAMAGE to 2.0,
+            SecondaryStat.CRITICAL_POWER to 0.5
         ),
         MainStat.STAMINA to mapOf(
             SecondaryStat.HP to 2.0

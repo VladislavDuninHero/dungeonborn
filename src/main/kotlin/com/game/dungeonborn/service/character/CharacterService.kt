@@ -131,7 +131,7 @@ class CharacterService(
                     it.item?.name ?: "Unknown",
                     it.item?.type ?: ItemType.UNKNOWN,
                     it.item?.slotType ?: SlotType.UNKNOWN,
-                    it.item?.itemLevel ?: 0,
+                    it.item?.itemLevel ?: 0.0,
                     it.item?.quality ?: ItemQuality.UNKNOWN,
                     it.item?.stamina ?: 0.0,
                     it.item?.strength ?: 0.0,
@@ -224,7 +224,7 @@ class CharacterService(
                             it.item?.name ?: "Unknown",
                             it.item?.type ?: ItemType.UNKNOWN,
                             it.item?.slotType ?: SlotType.UNKNOWN,
-                            it.item?.itemLevel ?: 0,
+                            it.item?.itemLevel ?: 0.0,
                             it.item?.quality ?: ItemQuality.UNKNOWN,
                             it.item?.stamina ?: 0.0,
                             it.item?.strength ?: 0.0,
@@ -262,7 +262,7 @@ class CharacterService(
                         it.item?.name ?: "Unknown",
                         it.item?.type ?: ItemType.UNKNOWN,
                         it.item?.slotType ?: SlotType.UNKNOWN,
-                        it.item?.itemLevel ?: 0,
+                        it.item?.itemLevel ?: 0.0,
                         it.item?.quality ?: ItemQuality.UNKNOWN,
                         it.item?.stamina ?: 0.0,
                         it.item?.strength ?: 0.0,
@@ -295,7 +295,7 @@ class CharacterService(
                         it.item?.name ?: "Unknown",
                         it.item?.type ?: ItemType.UNKNOWN,
                         it.item?.slotType ?: SlotType.UNKNOWN,
-                        it.item?.itemLevel ?: 0,
+                        it.item?.itemLevel ?: 0.0,
                         it.item?.quality ?: ItemQuality.UNKNOWN,
                         it.item?.stamina ?: 0.0,
                         it.item?.strength ?: 0.0,
@@ -367,6 +367,8 @@ class CharacterService(
 
         val updatedCharacter = characterRepository.save(foundCharacter);
 
+        characterStatsUtils.recalculateCharacterStats(foundCharacter);
+
         return AddToEquipmentResponseDTO(
             EquipmentDTO(
                 equipment.id ?: 0,
@@ -399,6 +401,8 @@ class CharacterService(
         }
 
         val updatedCharacter = characterRepository.save(foundCharacter);
+
+        characterStatsUtils.recalculateCharacterStats(foundCharacter);
 
         return DeleteFromEquipmentResponseDTO(
             EquipmentDTO(
@@ -457,6 +461,8 @@ class CharacterService(
 
         val updatedCharacter = characterRepository.save(foundCharacter);
 
+        characterStatsUtils.recalculateCharacterStats(foundCharacter);
+
         return DeleteFromEquipmentAndMoveToInventoryResponseDTO(
             EquipmentDTO(
                 equipment.id ?: 0,
@@ -478,7 +484,7 @@ class CharacterService(
                             it.item?.name ?: "Unknown",
                             it.item?.type ?: ItemType.UNKNOWN,
                             it.item?.slotType ?: SlotType.UNKNOWN,
-                            it.item?.itemLevel ?: 0,
+                            it.item?.itemLevel ?: 0.0,
                             it.item?.quality ?: ItemQuality.UNKNOWN,
                             it.item?.stamina ?: 0.0,
                             it.item?.strength ?: 0.0,

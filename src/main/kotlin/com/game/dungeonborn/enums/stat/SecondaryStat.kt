@@ -3,5 +3,6 @@ package com.game.dungeonborn.enums.stat
 enum class SecondaryStat {
     MANA,
     DAMAGE,
-    HP
+    HP,
+    CRITICAL_POWER
 }

@@ -110,7 +110,7 @@ CREATE TABLE items
     name              VARCHAR(255)                            NOT NULL,
     type              VARCHAR(255)                            NOT NULL,
     slot_type         VARCHAR(255)                            NOT NULL,
-    item_level        INTEGER                                 NOT NULL,
+    item_level        DOUBLE PRECISION                        NOT NULL,
     quality           VARCHAR(255)                            NOT NULL,
     min_dungeon_level INTEGER                                 NOT NULL,
     stamina           DOUBLE PRECISION                        NOT NULL,
@@ -172,34 +172,6 @@ CREATE TABLE users
     updated_at TIMESTAMP WITHOUT TIME ZONE,
     CONSTRAINT pk_users PRIMARY KEY (id)
 );
-
--- changeset wladw:1758048518-13
-ALTER TABLE character_equipment
-    ADD CONSTRAINT uc_character_equipment_chest_item UNIQUE (chest_item_id);
-
--- changeset wladw:1758048519-14
-ALTER TABLE character_equipment
-    ADD CONSTRAINT uc_character_equipment_feet_item UNIQUE (feet_item_id);
-
--- changeset wladw:1758048520-15
-ALTER TABLE character_equipment
-    ADD CONSTRAINT uc_character_equipment_hands_item UNIQUE (hands_item_id);
-
--- changeset wladw:1758048521-16
-ALTER TABLE character_equipment
-    ADD CONSTRAINT uc_character_equipment_head_item UNIQUE (head_item_id);
-
--- changeset wladw:1758048522-17
-ALTER TABLE character_equipment
-    ADD CONSTRAINT uc_character_equipment_legs_item UNIQUE (legs_item_id);
-
--- changeset wladw:1758048523-18
-ALTER TABLE character_equipment
-    ADD CONSTRAINT uc_character_equipment_shoulders_item UNIQUE (shoulders_item_id);
-
--- changeset wladw:1758048524-19
-ALTER TABLE character_equipment
-    ADD CONSTRAINT uc_character_equipment_weapon_item UNIQUE (weapon_item_id);
 
 -- changeset wladw:1758048525-20
 ALTER TABLE characters
