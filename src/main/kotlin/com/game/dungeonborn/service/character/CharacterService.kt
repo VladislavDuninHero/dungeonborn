@@ -144,11 +144,11 @@ class CharacterService(
             )
         }.orEmpty();
 
-
         return CharacterDTO(
             character.id ?: 0,
             character.name,
             character.characterLevel,
+            character.totalExperience,
             characterClass,
             characterStatsMapper.toDTO(characterStats),
             mappedEquipment,

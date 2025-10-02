@@ -26,7 +26,6 @@ class UserMapper(
     }
 
     fun toDTO(user: User): UserRegistrationResponseDTO {
-
         val id = user.id ?: throw RequiredFieldException("ID is required");
 
         return UserRegistrationResponseDTO(
@@ -37,7 +36,6 @@ class UserMapper(
     }
 
     fun toUserDTO(user: User): UserDTO {
-
         val id = user.id ?: throw RequiredFieldException("ID is required");
 
         return UserDTO(

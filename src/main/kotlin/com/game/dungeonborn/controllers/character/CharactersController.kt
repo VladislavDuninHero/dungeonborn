@@ -8,8 +8,13 @@ import com.game.dungeonborn.dto.character.inventory.AddToInventoryDTO
 import com.game.dungeonborn.dto.character.inventory.AddToInventoryResponseDTO
 import com.game.dungeonborn.dto.character.inventory.DeleteFromInventoryDTO
 import com.game.dungeonborn.dto.character.inventory.DeleteFromInventoryResponseDTO
+import com.game.dungeonborn.dto.character.levels.CharacterLevelPointsAddDTO
+import com.game.dungeonborn.dto.character.levels.CharacterLevelPointsAddResponseDTO
+import com.game.dungeonborn.dto.character.levels.CharacterLevelUpDTO
+import com.game.dungeonborn.dto.character.levels.CharacterLevelUpResponseDTO
 import com.game.dungeonborn.dto.official.SuccessMessageDTO
 import com.game.dungeonborn.service.character.CharacterService
+import com.game.dungeonborn.service.utils.level.CharacterLevelService
 import jakarta.validation.constraints.NotNull
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -19,7 +24,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping(Route.API_CHARACTERS_ROUTE)
 class CharactersController(
-    private val characterService: CharacterService
+    private val characterService: CharacterService,
+    private val characterLevelService: CharacterLevelService
 ) {
 
     @PostMapping(Route.API_CREATE_ROUTE)
@@ -130,5 +136,25 @@ class CharactersController(
         val deletedFromEquipment = characterService.deleteFromEquipmentAndMoveToInventory(deleteFromEquipmentDTO);
 
         return ResponseEntity.ok(deletedFromEquipment);
+    }
+
+    @PostMapping(Route.API_CHARACTER_LEVEL_UP)
+    @PreAuthorize("hasAuthority('UPDATE_CHAR')")
+    fun levelUp(
+        @RequestBody @Validated characterLevelUpDTO: CharacterLevelUpDTO
+    ) : ResponseEntity<CharacterLevelUpResponseDTO> {
+        val uppedLevel = characterLevelService.levelUp(characterLevelUpDTO);
+
+        return ResponseEntity.ok(uppedLevel);
+    }
+
+    @PostMapping(Route.API_CHARACTER_LEVEL_ADD_POINTS)
+    @PreAuthorize("hasAuthority('UPDATE_CHAR')")
+    fun addLevelPoints(
+        @RequestBody @Validated addLevelPointsDTO: CharacterLevelPointsAddDTO,
+    ) : ResponseEntity<CharacterLevelPointsAddResponseDTO> {
+        val uppedLevel = characterLevelService.addCharacterLevelPoints(addLevelPointsDTO);
+
+        return ResponseEntity.ok(uppedLevel);
     }
 }

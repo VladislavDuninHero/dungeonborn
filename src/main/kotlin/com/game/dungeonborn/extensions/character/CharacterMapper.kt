@@ -68,6 +68,7 @@ class CharacterMapper(
             character.id ?: 0,
             character.name,
             character.characterLevel,
+            character.totalExperience,
             characterClass,
             characterStatsMapper.toDTO(characterStats),
             mappedEquipment,
