@@ -49,13 +49,14 @@ class CharacterLevelService(
                 }
 
                 val totalPoints = level.totalPoints ?: 0.0;
+                val levelNumber = level.levelNumber ?: 0;
 
                 if (calculatedExperience > totalPoints) {
                     continue;
                 }
 
                 if (calculatedExperience <= totalPoints) {
-                    newLevelNumber = (level.levelNumber ?: 0) + 1;
+                    newLevelNumber = levelNumber + 1;
                     break;
                 }
             }
