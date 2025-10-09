@@ -35,4 +35,5 @@ object Route {
     const val API_CHARACTER_EQUIPMENT_ITEM_MOVE_TO_INVENTORY = "/equipment/move"
     const val API_CHARACTER_LEVEL_UP = "/levels/up"
     const val API_CHARACTER_LEVEL_ADD_POINTS = "/levels/points/add"
+    const val API_RUN_DUNGEON_ROUTE = "/run"
 }

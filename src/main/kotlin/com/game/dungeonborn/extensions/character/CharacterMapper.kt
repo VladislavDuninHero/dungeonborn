@@ -1,8 +1,10 @@
 package com.game.dungeonborn.extensions.character
 
+import com.game.dungeonborn.dto.character.CharacterBattleDTO
 import com.game.dungeonborn.dto.character.CharacterDTO
 import com.game.dungeonborn.dto.character.CharacterSlimDTO
 import com.game.dungeonborn.dto.character.inventory.InventoryItemDTO
+import com.game.dungeonborn.dto.dungeon.BattleResultDTO
 import com.game.dungeonborn.dto.item.ItemDTO
 import com.game.dungeonborn.entity.character.Character
 import com.game.dungeonborn.enums.item.ItemQuality
@@ -85,5 +87,12 @@ class CharacterMapper(
             character.characterLevel,
             characterClass,
         );
+    }
+
+    fun toBattleCharacterDTO(character: Character) : CharacterBattleDTO {
+        return CharacterBattleDTO(
+            character.characterStat?.totalHp ?: 0.0,
+            character.characterStat?.totalArmor ?: 0.0,
+        )
     }
 }

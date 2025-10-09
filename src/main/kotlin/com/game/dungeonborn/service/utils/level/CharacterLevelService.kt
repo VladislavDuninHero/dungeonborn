@@ -11,6 +11,7 @@ import com.game.dungeonborn.repositories.CharacterRepository
 import com.game.dungeonborn.service.stat.CharacterStatsUtils
 import com.game.dungeonborn.service.utils.character.CharacterUtils
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 
 @Service
@@ -25,6 +26,7 @@ class CharacterLevelService(
         return CharacterLevelUpResponseDTO(1);
     }
 
+    @Transactional
     fun addCharacterLevelPoints(characterLevelPointsAddDTO: CharacterLevelPointsAddDTO): CharacterLevelPointsAddResponseDTO {
         val foundCharacter = characterUtils.findCharacterById(characterLevelPointsAddDTO.characterId);
         val characterLevel = foundCharacter.characterLevel;
