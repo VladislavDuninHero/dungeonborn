@@ -59,7 +59,7 @@ class UserController(
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         return ResponseEntity.ok(UserLoginResponseSlimDTO(
-            userLoginData.login,
+            userLoginData.userId,
             userLoginData.authorization.accessToken
         ));
     }

@@ -57,7 +57,7 @@ class UserService(
         val jwtPair = JwtPairDTO(token, refreshToken.token);
 
         return UserLoginResponseDTO(
-            login = login,
+            userId = foundUser.id ?: 0,
             authorization = jwtPair
         );
     }

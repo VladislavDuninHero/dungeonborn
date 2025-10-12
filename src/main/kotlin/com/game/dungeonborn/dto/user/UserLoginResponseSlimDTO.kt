@@ -1,7 +1,7 @@
 package com.game.dungeonborn.dto.user
 
 data class UserLoginResponseSlimDTO(
-    val login: String,
+    val userId: Long,
     val token: String,
 ) {
 }

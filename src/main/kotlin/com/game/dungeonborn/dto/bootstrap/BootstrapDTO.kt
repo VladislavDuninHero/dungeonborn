@@ -1,6 +1,5 @@
 package com.game.dungeonborn.dto.bootstrap
 
-import com.game.dungeonborn.dto.character.CharacterDTO
 import com.game.dungeonborn.dto.character.CharacterSlimDTO
 import com.game.dungeonborn.dto.user.UserDTO
 
