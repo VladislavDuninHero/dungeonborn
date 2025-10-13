@@ -26,4 +26,5 @@ object ExceptionMessage {
     const val INVENTORY_NOT_FOUND : String = "Inventory not found";
     const val INVENTORY_ITEM_NOT_FOUND : String = "Inventory not found";
     const val DUNGEON_LEVEL_NOT_FOUND : String = "Dungeon level not found";
+    const val USER_IS_INVALID : String = "User is invalid";
 }

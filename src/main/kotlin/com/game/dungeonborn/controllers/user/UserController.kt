@@ -67,9 +67,9 @@ class UserController(
     @GetMapping(Route.API_BOOTSTRAP_ROUTE)
     @PreAuthorize("hasAuthority('READ_USER')")
     fun bootstrap(
-        @PathVariable @NotNull login: String,
+        @PathVariable @NotNull userId: Long,
     ): ResponseEntity<BootstrapDTO> {
-        val bootstrap = bootstrapService.getBootstrap(login);
+        val bootstrap = bootstrapService.getBootstrap(userId);
 
         return ResponseEntity.ok(bootstrap);
     }

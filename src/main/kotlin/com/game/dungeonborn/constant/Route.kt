@@ -21,7 +21,7 @@ object Route {
     const val API_UPDATE_ROUTE = "/update/{id}"
     const val API_DELETE_ROUTE = "/delete/{id}"
     const val API_RECOVERY_ROUTE = "/recovery/{id}"
-    const val API_BOOTSTRAP_ROUTE = "/{login}/bootstrap"
+    const val API_BOOTSTRAP_ROUTE = "/{userId}/bootstrap"
     const val API_SELECT_ROUTE = "/select"
     const val API_GET_ALL_ROUTE = "/all"
 
