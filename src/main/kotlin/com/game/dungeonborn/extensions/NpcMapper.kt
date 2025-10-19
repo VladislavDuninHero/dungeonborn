@@ -3,6 +3,7 @@ package com.game.dungeonborn.extensions
 import com.game.dungeonborn.dto.npc.NpcDTO
 import com.game.dungeonborn.entity.npc.Npc
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class NpcMapper {
@@ -13,6 +14,8 @@ class NpcMapper {
             lvl = npc.lvl ?: 0,
             isFriendly = npc.isFriendly ?: false,
             spawnChance = npc.spawnChance ?: 0.0,
+            initHp =  npc.maxHp ?: 0.0,
+            instanceId = UUID.randomUUID(),
             maxHp = npc.maxHp ?: 0.0,
             maxMana = npc.maxMana ?: 0.0,
             isBoss = npc.isBoss ?: false,

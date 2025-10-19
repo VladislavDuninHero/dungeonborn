@@ -19,7 +19,8 @@ class NpcBattleService {
 
         return AttackDTO(
             totalDamage,
-            criticalPower
+            criticalPower,
+            isCritical = isCriticalAttack
         );
     }
 

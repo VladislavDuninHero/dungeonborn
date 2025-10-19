@@ -97,19 +97,21 @@ class DungeonService(
             val loot = foundDungeonLevel.dungeonLoot?.lootTable?.lootTableItems ?: mutableListOf();
             val calculatedLoot = lootService.calculateDrop(loot);
 
-            calculatedLoot.forEach {
-                val inventoryItem = CharacterInventoryItem();
+            if ((foundCharacter.characterInventory?.items?.size ?: 0) < 25) {
+                calculatedLoot.forEach {
+                    val inventoryItem = CharacterInventoryItem();
 
-                inventoryItem.inventory = foundCharacter.characterInventory;
-                inventoryItem.item = it.item;
+                    inventoryItem.inventory = foundCharacter.characterInventory;
+                    inventoryItem.item = it.item;
 
-                characterInventoryLoot.add(inventoryItem);
+                    characterInventoryLoot.add(inventoryItem);
+                }
+
+                foundCharacter.characterInventory?.items?.addAll(characterInventoryLoot);
+
+                dungeonProgressRepository.save(dungeonProgress);
+                characterRepository.save(foundCharacter);
             }
-
-            foundCharacter.characterInventory?.items?.addAll(characterInventoryLoot);
-
-            dungeonProgressRepository.save(dungeonProgress);
-            characterRepository.save(foundCharacter);
         }
 
         return RunDungeonResponseDTO(
@@ -122,5 +124,13 @@ class DungeonService(
                 characterInventoryLoot.map { it.item?.id ?: 0 }.toList()
             )
         );
+    }
+
+    fun getCharacterAvailableDungeonsByCharacterId(userId: Long): List<DungeonSlimDTO> {
+        val foundCharacter = characterUtils.findCharacterById(userId);
+
+        val availableDungeons = dungeonUtils.getAvailableDungeonsForCharacter(userId);
+
+        return availableDungeons;
     }
 }

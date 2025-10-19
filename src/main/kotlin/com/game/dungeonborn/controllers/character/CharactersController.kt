@@ -8,8 +8,10 @@ import com.game.dungeonborn.dto.character.inventory.AddToInventoryDTO
 import com.game.dungeonborn.dto.character.inventory.AddToInventoryResponseDTO
 import com.game.dungeonborn.dto.character.inventory.DeleteFromInventoryDTO
 import com.game.dungeonborn.dto.character.inventory.DeleteFromInventoryResponseDTO
+import com.game.dungeonborn.dto.dungeon.DungeonSlimDTO
 import com.game.dungeonborn.dto.official.SuccessMessageDTO
 import com.game.dungeonborn.service.character.CharacterService
+import com.game.dungeonborn.service.dungeon.DungeonService
 import jakarta.validation.constraints.NotNull
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -19,7 +21,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping(Route.API_CHARACTERS_ROUTE)
 class CharactersController(
-    private val characterService: CharacterService
+    private val characterService: CharacterService,
+    private val dungeonService: DungeonService,
 ) {
 
     @PostMapping(Route.API_CREATE_ROUTE)
@@ -130,5 +133,14 @@ class CharactersController(
         val deletedFromEquipment = characterService.deleteFromEquipmentAndMoveToInventory(deleteFromEquipmentDTO);
 
         return ResponseEntity.ok(deletedFromEquipment);
+    }
+
+    @GetMapping(Route.API_GET_AVAILABLE_DUNGEONS_ROUTE)
+    fun getAvailableDungeons(
+        @PathVariable @NotNull characterId: Long,
+    ): ResponseEntity<List<DungeonSlimDTO>> {
+        val availableDungeons = dungeonService.getCharacterAvailableDungeonsByCharacterId(characterId);
+
+        return ResponseEntity.ok(availableDungeons);
     }
 }

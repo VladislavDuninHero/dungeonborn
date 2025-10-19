@@ -19,7 +19,8 @@ class CharacterBattleService {
 
         return AttackDTO(
             totalDamage,
-            criticalPower
+            criticalPower,
+            isCritical = isCriticalAttack
         );
     }
 
