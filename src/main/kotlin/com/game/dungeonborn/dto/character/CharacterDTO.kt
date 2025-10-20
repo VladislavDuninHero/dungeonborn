@@ -9,6 +9,7 @@ data class CharacterDTO(
     var name: String,
     var level: Int,
     var experience: Double,
+    var nextLevelPoints: Double,
     var characterClass: CharacterClass?,
     var characterStats: CharacterStatsDTO,
     var equipment: List<ItemDTO>,

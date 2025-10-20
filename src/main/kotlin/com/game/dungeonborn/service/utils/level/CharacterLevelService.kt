@@ -5,6 +5,7 @@ import com.game.dungeonborn.dto.character.levels.CharacterLevelPointsAddDTO
 import com.game.dungeonborn.dto.character.levels.CharacterLevelPointsAddResponseDTO
 import com.game.dungeonborn.dto.character.levels.CharacterLevelUpDTO
 import com.game.dungeonborn.dto.character.levels.CharacterLevelUpResponseDTO
+import com.game.dungeonborn.entity.character.CharacterLevelBonus
 import com.game.dungeonborn.exception.NotImplementedException
 import com.game.dungeonborn.repositories.CharacterLevelBonusRepository
 import com.game.dungeonborn.repositories.CharacterRepository
@@ -19,11 +20,16 @@ class CharacterLevelService(
     private val characterUtils: CharacterUtils,
     private val characterLevelBonusRepository: CharacterLevelBonusRepository,
     private val characterRepository: CharacterRepository,
-    private val statsUtils: CharacterStatsUtils
+    private val statsUtils: CharacterStatsUtils,
+    private val characterLevelUtils: CharacterLevelUtils,
 ) {
 
     fun levelUp(levelUpDTO: CharacterLevelUpDTO): CharacterLevelUpResponseDTO {
         return CharacterLevelUpResponseDTO(1);
+    }
+
+    fun getCharacterLevelByLevelNumber(level: Int): CharacterLevelBonus {
+        return characterLevelUtils.getLevelBonusByLevelNumber(level);
     }
 
     @Transactional
@@ -58,7 +64,7 @@ class CharacterLevelService(
                 }
 
                 if (calculatedExperience <= totalPoints) {
-                    newLevelNumber = levelNumber + 1;
+                    newLevelNumber = levelNumber;
                     break;
                 }
             }

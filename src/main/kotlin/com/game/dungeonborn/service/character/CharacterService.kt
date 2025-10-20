@@ -23,6 +23,7 @@ import com.game.dungeonborn.service.stat.CharacterStatsUtils
 import com.game.dungeonborn.service.utils.character.CharacterUtils
 import com.game.dungeonborn.service.utils.inventory.CharacterInventoryUtils
 import com.game.dungeonborn.service.utils.item.ItemsUtils
+import com.game.dungeonborn.service.utils.level.CharacterLevelService
 import com.game.dungeonborn.service.utils.user.UserUtils
 import com.game.dungeonborn.service.validation.character.UpdateCharacterValidationManager
 import org.springframework.stereotype.Service
@@ -42,7 +43,8 @@ class CharacterService(
     private val dungeonUtils: DungeonUtils,
     private val itemsUtils: ItemsUtils,
     private val characterInventoryUtils: CharacterInventoryUtils,
-    private val characterInventoryRepository: CharacterInventoryRepository
+    private val characterInventoryRepository: CharacterInventoryRepository,
+    private val characterLevelService: CharacterLevelService,
 ) {
 
     @Transactional
@@ -144,11 +146,15 @@ class CharacterService(
             )
         }.orEmpty();
 
+        val nextLevelPoints = characterLevelService.getCharacterLevelByLevelNumber(character.characterLevel)
+            .totalPoints ?: 0.0;
+
         return CharacterDTO(
             character.id ?: 0,
             character.name,
             character.characterLevel,
             character.totalExperience,
+            nextLevelPoints,
             characterClass,
             characterStatsMapper.toDTO(characterStats),
             mappedEquipment,

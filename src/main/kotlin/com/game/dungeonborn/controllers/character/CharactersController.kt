@@ -136,6 +136,7 @@ class CharactersController(
     }
 
     @GetMapping(Route.API_GET_AVAILABLE_DUNGEONS_ROUTE)
+    @PreAuthorize("hasAuthority('READ_CHAR')")
     fun getAvailableDungeons(
         @PathVariable @NotNull characterId: Long,
     ): ResponseEntity<List<DungeonSlimDTO>> {

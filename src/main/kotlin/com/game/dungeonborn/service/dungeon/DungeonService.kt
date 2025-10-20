@@ -1,6 +1,8 @@
 package com.game.dungeonborn.service.dungeon
 
+import com.game.dungeonborn.dto.character.CharacterInfoDTO
 import com.game.dungeonborn.dto.character.levels.CharacterLevelPointsAddDTO
+import com.game.dungeonborn.dto.character.levels.CharacterLevelPointsAddResponseDTO
 import com.game.dungeonborn.dto.dungeon.*
 import com.game.dungeonborn.entity.character.CharacterInventoryItem
 import com.game.dungeonborn.entity.dungeon.DungeonProgress
@@ -71,12 +73,19 @@ class DungeonService(
         val foundCharacter = characterUtils.findCharacterById(runDungeonDTO.characterId);
         val foundDungeon = dungeonUtils.findDungeonByIdAndGet(runDungeonDTO.dungeonId);
         val foundDungeonLevel = dungeonLevelUtils.findDungeonLevelById(runDungeonDTO.dungeonLevelId);
+        val foundCharacterLevel = characterLevelService.getCharacterLevelByLevelNumber(foundCharacter.characterLevel)
 
         val calculatedDungeonResult = dungeonUtils.calculateDungeonRunResult(
             foundCharacter,
             foundDungeon,
             foundDungeonLevel
         )
+        var calculatedCharacterLevel = CharacterLevelPointsAddResponseDTO(
+            level = foundCharacter.characterLevel,
+            points = foundCharacter.totalExperience,
+            levelUp = false,
+            nextLevelPoints = foundCharacterLevel.totalPoints ?: 0.0
+        );
 
         val characterInventoryLoot: MutableList<CharacterInventoryItem> = mutableListOf();
         val exp = foundDungeonLevel.dungeonLoot?.expReward ?: 0.0;
@@ -87,9 +96,9 @@ class DungeonService(
             dungeonProgress.dungeonLevel = foundDungeonLevel;
             dungeonProgress.character = foundCharacter;
 
-            characterLevelService.addCharacterLevelPoints(
+            calculatedCharacterLevel = characterLevelService.addCharacterLevelPoints(
                 CharacterLevelPointsAddDTO(
-                foundCharacter.id ?: 0,
+                    foundCharacter.id ?: 0,
                     exp
                 )
             );
@@ -115,7 +124,11 @@ class DungeonService(
         }
 
         return RunDungeonResponseDTO(
-            foundCharacter.id ?: 0,
+            CharacterInfoDTO(
+                foundCharacter.id ?: 0,
+                level = calculatedCharacterLevel.level,
+                isLevelUp = calculatedCharacterLevel.levelUp,
+            ),
             runDungeonDTO.dungeonId,
             runDungeonDTO.dungeonLevelId,
             calculatedDungeonResult,

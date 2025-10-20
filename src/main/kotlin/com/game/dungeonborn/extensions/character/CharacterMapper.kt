@@ -14,13 +14,15 @@ import com.game.dungeonborn.exception.RequiredFieldException
 import com.game.dungeonborn.extensions.stats.CharacterStatsMapper
 import com.game.dungeonborn.service.stat.CharacterStatsUtils
 import com.game.dungeonborn.service.utils.character.CharacterUtils
+import com.game.dungeonborn.service.utils.level.CharacterLevelService
 import org.springframework.stereotype.Component
 
 @Component
 class CharacterMapper(
     private val characterUtils: CharacterUtils,
     private val characterStatsUtils: CharacterStatsUtils,
-    private val characterStatsMapper: CharacterStatsMapper
+    private val characterStatsMapper: CharacterStatsMapper,
+    private val characterLevelService: CharacterLevelService,
 ) {
     fun toCharacterDTO(character: Character) : CharacterDTO {
         val characterId = character.id ?: throw RequiredFieldException("Character id is required");
@@ -66,11 +68,15 @@ class CharacterMapper(
             )
         }.orEmpty();
 
+        val nextLevelPoints = characterLevelService.getCharacterLevelByLevelNumber(character.characterLevel)
+            .totalPoints ?: 0.0;
+
         return CharacterDTO(
             character.id ?: 0,
             character.name,
             character.characterLevel,
             character.totalExperience,
+            nextLevelPoints,
             characterClass,
             characterStatsMapper.toDTO(characterStats),
             mappedEquipment,

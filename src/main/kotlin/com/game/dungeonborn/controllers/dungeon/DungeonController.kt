@@ -8,6 +8,7 @@ import com.game.dungeonborn.dto.dungeon.RunDungeonResponseDTO
 import com.game.dungeonborn.service.dungeon.DungeonService
 import jakarta.validation.constraints.NotNull
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -18,6 +19,7 @@ class DungeonController(
 ) {
 
     @GetMapping(Route.API_GET_ROUTE)
+    @PreAuthorize("hasAuthority('READ_DUNGEON')")
     fun getDungeon(
         @PathVariable @NotNull id: Long,
     ): ResponseEntity<DungeonDTO> {
@@ -27,6 +29,7 @@ class DungeonController(
     }
 
     @GetMapping(Route.API_GET_ALL_ROUTE)
+    @PreAuthorize("hasAuthority('READ_DUNGEON')")
     fun getAllDungeons(): ResponseEntity<List<DungeonSlimDTO>> {
         val dungeons = dungeonService.getAllDungeons();
 
@@ -34,6 +37,7 @@ class DungeonController(
     }
 
     @PostMapping(Route.API_RUN_DUNGEON_ROUTE)
+    @PreAuthorize("hasAuthority('READ_DUNGEON')")
     fun startDungeon(
         @RequestBody @Validated runDungeonDTO: RunDungeonDTO
     ): ResponseEntity<RunDungeonResponseDTO> {
